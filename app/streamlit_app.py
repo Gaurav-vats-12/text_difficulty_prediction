@@ -31,8 +31,8 @@ def predict_language_level(text):
 
 # Fetch news articles from NewsAPI
 news_api_key = 'e7c7cca4d5184b069f195de63ad0d86c'
-def fetch_news(language='fr'):
-    url = f'https://newsapi.org/v2/top-headlines?country={language}&apiKey={news_api_key}&pageSize=10'
+def fetch_news():
+    url = f'https://newsapi.org/v2/top-headlines?country='fr'&apiKey={news_api_key}&pageSize=10'
     response = requests.get(url)
     response.raise_for_status()
     return response.json()
@@ -89,10 +89,8 @@ def setup_model():
 
 # Main app logic
 def main():
-    language = st.selectbox("Choose article language:", ["en", "fr"])  # Language selector
-
     try:
-        articles_data = fetch_news(language)
+        articles_data = fetch_news()
         if articles_data['status'] == 'ok' and articles_data['totalResults'] > 0:
             for article in articles_data['articles']:
                 title = article['title']
