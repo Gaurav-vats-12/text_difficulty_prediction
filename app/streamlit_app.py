@@ -118,37 +118,6 @@ def setup_model():
         st.error(f"Error loading model or tokenizer: {str(e)}")
         return None, None
 
-# Main app logic
-def test():
-    try:
-        articles_data = fetch_news()
-        if articles_data['status'] == 'ok' and articles_data['totalResults'] > 0:
-            st.write(str(articles_data['totalResults']))
-            for article in articles_data['articles']:
-                if article['title']:  # Ensure article has content
-                    title = article['title']
-                    description = article['description'] or "Pas de description disponible"
-                    url = article['url']
-                    urlToImage = article['urlToImage']
-                    content = article['content'] or "Pas de contenu disponible"
-
-                    col1, col2 = st.columns([1, 3])
-                    with col1:
-                        if urlToImage:
-                            st.image(urlToImage, width=100)
-                    with col2:
-                        st.subheader(title)
-                        st.write(description)
-                        st.write(f"[Read more]({url})")
-
-                    # Toggle button to show/hide the content within the app
-                    if st.button("Show Content", key=title):
-                        st.write(content)
-                    st.markdown("---")
-        else:
-            st.write("No articles found.")
-    except requests.exceptions.RequestException as e:
-        st.error(f"An error occurred while fetching articles: {str(e)}")
 
 if __name__ == '__main__':
     main()
