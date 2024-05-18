@@ -2,6 +2,7 @@
 import streamlit as st
 import requests
 import os
+import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
 import tokenizers
@@ -61,8 +62,6 @@ def fetch_french_news():
 def main():
     model, tokenizer = setup_model()
     nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
-
-    api_key = st.secrets["news_api"]
     if st.button('Fetch and Predict News'):
         texts = fetch_french_news()
         if texts:
