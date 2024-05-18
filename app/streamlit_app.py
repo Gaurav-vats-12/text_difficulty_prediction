@@ -9,8 +9,8 @@ try:
     st.write('SentencePiece is successfully installed.')
 except ImportError:
     st.write('Failed to install SentencePiece.')
-
 import tokenizers
+import protobuf
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
