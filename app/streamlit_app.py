@@ -32,7 +32,7 @@ def predict_language_level(text):
 # Fetch news articles from NewsAPI
 news_api_key = 'e7c7cca4d5184b069f195de63ad0d86c'
 def fetch_news():
-    url = f'https://newsapi.org/v2/top-headlines?country=fr&apiKey={news_api_key}'
+    url = f'https://newsapi.org/v2/top-headlines?language=fr&apiKey={news_api_key}'
     response = requests.get(url)
     response.raise_for_status()
     return response.json()
