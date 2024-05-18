@@ -24,7 +24,7 @@ def setup_model():
     model_files = [
         'config.json',
         'model.safetensors', 
-        #'added_tokens.json',
+        'added_tokens.json',
         #'special_tokens_map.json',
         #'tokenizer_config.json',  
         #'sentencepiece.bpe.model' 
