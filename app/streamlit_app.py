@@ -37,6 +37,49 @@ def fetch_news():
     response.raise_for_status()
     return response.json()
 
+# Fetch news articles from MediaStack
+mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
+base_url = "http://api.mediastack.com/v1/news"
+
+# Select options for the API request
+categories = st.multiselect("Choose categories:", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'])
+
+# Fetch news articles from mediastack API
+def fetch_news():
+    params = {
+        'access_key': mediastack_api_key,
+        'languages': "fr",
+        'categories': ','.join(categories) if categories else None,
+        'limit': 4  # Limit to 4 articles for demonstration
+    }
+    response = requests.get(base_url, params=params)
+    if response.status_code == 200:
+        return response.json()['data']
+    else:
+        st.error('Failed to retrieve news articles.')
+        return []
+
+# Display news articles in the app
+def display_news():
+    articles = fetch_news()
+    if articles:
+        for article in articles:
+            st.image(article['image'] if article['image'] else '')
+            st.subheader(article['title'])
+            st.write('Published At:', article['published_at'])
+            st.write(article['description'] if article['description'] else 'No description available.')
+            
+            # Expandable section to show article content
+            with st.expander("Show Content"):
+                st.write(article['content'] if article['content'] else 'Content not available.')
+            st.markdown("---")
+    else:
+        st.write("No articles found. Try adjusting your filters.")
+
+if st.button('Fetch News'):
+    display_news()
+
+
 # Load the model from GitHub
 def download_file_from_github(url, destination):
     response = requests.get(url)
