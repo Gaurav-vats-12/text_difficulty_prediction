@@ -36,7 +36,7 @@ def setup_model():
     for file_name in model_files:
         file_path = os.path.join(model_dir, file_name)
         if not os.path.exists(file_path):
-            download_file_from_github(f"{base_url}{file_name}", file_path)
+            download_file_from_github(f"{base_url}/{file_name}", file_path)
 
     # Load model and tokenizer
     tokenizer = CamembertTokenizer.from_pretrained(model_dir)
