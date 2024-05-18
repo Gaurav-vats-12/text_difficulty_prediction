@@ -60,7 +60,7 @@ def fetch_news():
         return []
 
 # Display news articles in the app
-def display_news():
+def main():
     articles = fetch_news()
     if articles:
         for article in articles:
@@ -75,9 +75,6 @@ def display_news():
             st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
-
-if st.button('Fetch News'):
-    display_news()
 
 
 # Load the model from GitHub
@@ -122,7 +119,7 @@ def setup_model():
         return None, None
 
 # Main app logic
-def main():
+def test():
     try:
         articles_data = fetch_news()
         if articles_data['status'] == 'ok' and articles_data['totalResults'] > 0:
