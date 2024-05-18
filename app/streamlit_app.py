@@ -84,12 +84,12 @@ def main():
         articles_data = fetch_news()
         if articles_data['status'] == 'ok' and articles_data['totalResults'] > 0:
             for article in articles_data['articles']:
-                if article['description']:  # Ensure article has content
+                if article['title']:  # Ensure article has content
                     title = article['title']
                     description = article['description'] or "Pas de description disponible"
                     url = article['url']
                     urlToImage = article['urlToImage']
-                    content = article['content']
+                    content = article['content'] or "Pas de contenu disponible"
 
                     col1, col2 = st.columns([1, 3])
                     with col1:
