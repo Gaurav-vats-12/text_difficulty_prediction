@@ -43,30 +43,6 @@ def setup_model():
     model = CamembertForSequenceClassification.from_pretrained(model_dir)
     return model, tokenizer
 
-def main():
-    st.title("French Text Difficulty Prediction")
-    st.write("Enter the French text below and press 'Predict' to get the difficulty level.")
-
-    # Setup model and tokenizer
-    model, tokenizer = setup_model()
-    nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
-
-    # User text input
-    user_input = st.text_area("French Text", "Type your text here...")
-    if st.button('Predict'):
-        if user_input:
-            # Perform prediction
-            predictions = nlp(user_input)
-            st.write(predictions)
-        else:
-            st.write("Please enter some text to predict its difficulty.")
-
-if __name__ == '__main__':
-    main()
-
-
-
-
 # Fetch french texts via newsapi
 def fetch_french_news(api_key):
     url = f"https://newsapi.org/v2/top-headlines?country=fr&apiKey=e7c7cca4d5184b069f195de63ad0d86c"
@@ -74,3 +50,24 @@ def fetch_french_news(api_key):
     articles = response.json().get('articles', [])
     french_texts = [article['content'] for article in articles if article['content']]
     return french_texts
+
+def main():
+    st.title("French Text Difficulty Prediction")
+    st.write("Automatically fetch and predict the difficulty of French news texts.")
+
+    model, tokenizer = setup_model()
+    nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
+
+    api_key = st.secrets["news_api"]
+    if st.button('Fetch and Predict News'):
+        texts = fetch_french_news(api_key)
+        if texts:
+            results = [nlp(text) for text in texts]
+            for result in results:
+                st.write(result)
+        else:
+            st.write("No news content available or failed to fetch news.")
+
+if __name__ == '__main__':
+    main()
+
