@@ -2,7 +2,6 @@
 import streamlit as st
 import requests
 import os
-import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
 import tokenizers
@@ -20,17 +19,18 @@ def download_file_from_github(url, destination):
         st.error("Failed to download file. Check the URL and network connection.")
 
 def setup_model():
-    model_dir = 'cache/'
+    """Setup the model by ensuring all necessary files are downloaded and loaded."""
+    model_dir = 'cache'  # Correct path relative to the streamlit_app.py file
     os.makedirs(model_dir, exist_ok=True)
 
     # List of model files you need to download
     model_files = [
         'config.json',
-        'model.safetensors', 
+        'model.safetensors',
         'added_tokens.json',
         'special_tokens_map.json',
-        'tokenizer_config.json',  
-        'sentencepiece.bpe.model' 
+        'tokenizer_config.json',
+        'sentencepiece.bpe.model'
     ]
 
     base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
@@ -42,9 +42,13 @@ def setup_model():
             download_file_from_github(f"{base_url}{file_name}", file_path)
 
     # Load model and tokenizer
-    tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-    model = CamembertForSequenceClassification.from_pretrained(model_dir)
-    return model, tokenizer
+    try:
+        tokenizer = CamembertTokenizer.from_pretrained(model_dir)
+        model = CamembertForSequenceClassification.from_pretrained(model_dir)
+        return model, tokenizer
+    except Exception as e:
+        st.error(f"Error loading model or tokenizer: {str(e)}")
+        return None, None
 
 # Fetch french texts via newsapi
 def fetch_french_news():
