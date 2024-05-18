@@ -2,3 +2,5 @@ streamlit
 requests
 torch
 transformers
+sentencepiece  
+tokenizers 
