@@ -5,6 +5,7 @@ import os
 import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
+print(transformers.__version__)
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
