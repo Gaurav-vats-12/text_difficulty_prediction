@@ -27,7 +27,7 @@ def setup_model():
         'added_tokens.json',
         'special_tokens_map.json',
         'tokenizer_config.json',  
-        #'sentencepiece.bpe.model' 
+        'sentencepiece.bpe.model' 
     ]
 
     base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
