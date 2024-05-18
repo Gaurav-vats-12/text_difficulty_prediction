@@ -3,8 +3,10 @@ import streamlit as st
 import requests
 import os
 import transformers
-from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline, utils
+from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
+import tokenizers
+import protobuf
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
