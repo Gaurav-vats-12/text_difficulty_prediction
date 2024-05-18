@@ -23,7 +23,7 @@ def setup_model():
     # List of model files you need to download
     model_files = [
         'config.json',
-        #'model.safetensors', 
+        'model.safetensors', 
         #'added_tokens.json',
         #'special_tokens_map.json',
         #'tokenizer_config.json',  
