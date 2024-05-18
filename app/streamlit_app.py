@@ -1,60 +1,70 @@
-pip install transformers
-
+# Import necessary libraries
 import streamlit as st
-import pandas as pd
 import requests
+import os
+from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
 
-# Load the model
-import streamlit as st
-import requests
-import os
-from transformers import CamembertTokenizer, CamembertForSequenceClassification
-
-def download_file(url, save_path):
-    """ Helper function to download a file from a given URL to a specified save path """
+# Load the model from GitHub
+def download_file_from_github(url, destination):
     response = requests.get(url)
-    with open(save_path, "wb") as file:
-        file.write(response.content)
+    if response.status_code == 200:
+        with open(destination, 'wb') as f:
+            f.write(response.content)
+    else:
+        st.error("Failed to download file. Check the URL and network connection.")
 
-def load_model_and_tokenizer(model_dir):
-    """ Load the model and tokenizer from the specified directory """
-    tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-    model = CamembertForSequenceClassification.from_pretrained(model_dir)
-    return tokenizer, model
-
-def main():
-    st.title('French Text Difficulty Classifier')
-
-    # Define the GitHub URL for the model and tokenizer files
-    base_url = 'https://github.com/your_username/your_repository/raw/main/app/cache/'
-    model_files = ['config.json', 'tokenizer_config.json', 'special_tokens_map.json', 
-                   'sentencepiece.bpe.model', 'added_tokens.json', 'model.safetensors']
-
-    model_dir = 'cached_model'
+def setup_model():
+    model_dir = 'model'
     os.makedirs(model_dir, exist_ok=True)
 
-    # Download model files if not already downloaded
-    if not os.path.exists(f'{model_dir}/config.json'):
-        for file_name in model_files:
-            download_file(f"{base_url}{file_name}", f"{model_dir}/{file_name}")
+    # List of model files you need to download
+    model_files = [
+        'config.json',
+        'pytorch_model.bin',  # Assuming this is the name of your model file
+        'tokenizer_config.json',
+        'special_tokens_map.json',
+        'vocab.txt',  # Adjust accordingly based on your tokenizer files
+        'sentencepiece.bpe.model'  # This might be not needed depending on tokenizer type
+    ]
 
-    # Load the model and tokenizer
-    tokenizer, model = load_model_and_tokenizer(model_dir)
+    base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
 
-    # Example usage in Streamlit
-    user_input = st.text_area("Enter your French text here:")
-    if user_input:
-        inputs = tokenizer(user_input, return_tensors="pt")
-        outputs = model(**inputs)
-        prediction = outputs.logits.argmax(-1).item()  # Simplified example prediction
+    # Download model and tokenizer files
+    for file_name in model_files:
+        file_path = os.path.join(model_dir, file_name)
+        if not os.path.exists(file_path):
+            download_file_from_github(f"{base_url}{file_name}", file_path)
 
-        st.write(f"Predicted Label: {prediction}")
+    # Load model and tokenizer
+    tokenizer = CamembertTokenizer.from_pretrained(model_dir)
+    model = CamembertForSequenceClassification.from_pretrained(model_dir)
+    return model, tokenizer
+
+def main():
+    st.title("French Text Difficulty Prediction")
+    st.write("Enter the French text below and press 'Predict' to get the difficulty level.")
+
+    # Setup model and tokenizer
+    model, tokenizer = setup_model()
+    nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
+
+    # User text input
+    user_input = st.text_area("French Text", "Type your text here...")
+    if st.button('Predict'):
+        if user_input:
+            # Perform prediction
+            predictions = nlp(user_input)
+            st.write(predictions)
+        else:
+            st.write("Please enter some text to predict its difficulty.")
 
 if __name__ == '__main__':
     main()
+
+
 
 
 # Fetch french texts via newsapi
