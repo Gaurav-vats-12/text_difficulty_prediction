@@ -32,7 +32,7 @@ def predict_language_level(text):
 # Fetch news articles from NewsAPI
 news_api_key = 'e7c7cca4d5184b069f195de63ad0d86c'
 def fetch_news():
-    url = f'https://newsapi.org/v2/top-headlines?country='fr'&apiKey={news_api_key}&pageSize=10'
+    url = f'https://newsapi.org/v2/top-headlines?country='fr'&apiKey={news_api_key}&pageSize=50'
     response = requests.get(url)
     response.raise_for_status()
     return response.json()
@@ -77,15 +77,6 @@ def setup_model():
     except Exception as e:
         st.error(f"Error loading model or tokenizer: {str(e)}")
         return None, None
-
-# Fetch french texts via newsapi
-#def fetch_french_news():
-    #newsapi = NewsApiClient(api_key='e7c7cca4d5184b069f195de63ad0d86c')
-    #url = f"https://newsapi.org/v2/top-headlines?country=fr&apiKey=e7c7cca4d5184b069f195de63ad0d86c"
-    #response = requests.get(url)
-    #articles = response.json().get('articles', [])
-    #french_texts = [article['content'] for article in articles if article['content']]
-    #return french_texts
 
 # Main app logic
 def main():
