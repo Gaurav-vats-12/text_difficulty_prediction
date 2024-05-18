@@ -1,8 +1,4 @@
 streamlit
-pandas
-plotly
-matplotlib
-requests
-textstat
-os
 transformers
+torch
+requests
