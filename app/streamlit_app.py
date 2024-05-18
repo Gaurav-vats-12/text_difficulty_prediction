@@ -24,7 +24,7 @@ def download_file_from_github(url, destination):
         st.error("Failed to download file. Check the URL and network connection.")
 
 def setup_model():
-    model_dir = './app/cache'
+    model_dir = 'app/cache'
     os.makedirs(model_dir, exist_ok=True)
 
     # List of model files you need to download
