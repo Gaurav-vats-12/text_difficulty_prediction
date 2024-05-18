@@ -45,7 +45,7 @@ def setup_model():
     return model, tokenizer
 
 # Fetch french texts via newsapi
-def fetch_french_news(api_key):
+def fetch_french_news():
     url = f"https://newsapi.org/v2/top-headlines?country=fr&apiKey=e7c7cca4d5184b069f195de63ad0d86c"
     response = requests.get(url)
     articles = response.json().get('articles', [])
@@ -61,7 +61,7 @@ def main():
 
     api_key = st.secrets["news_api"]
     if st.button('Fetch and Predict News'):
-        texts = fetch_french_news(api_key)
+        texts = fetch_french_news()
         if texts:
             results = [nlp(text) for text in texts]
             for result in results:
