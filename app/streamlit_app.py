@@ -4,11 +4,7 @@ import requests
 import os
 import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
-try:
-    import sentencepiece
-    st.write('SentencePiece is successfully installed.')
-except ImportError:
-    st.write('Failed to install SentencePiece.')
+import sentencepiece
 import tokenizers
 
 st.title('Levelingo')
@@ -59,11 +55,6 @@ def fetch_french_news():
     return french_texts
 
 def main():
-    st.write(str(transformers.__version__))
-
-    st.title("French Text Difficulty Prediction")
-    st.write("Automatically fetch and predict the difficulty of French news texts.")
-
     model, tokenizer = setup_model()
     nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
