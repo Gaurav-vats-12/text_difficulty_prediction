@@ -54,7 +54,7 @@ def fetch_french_news():
     return french_texts
 
 def main():
-    print(transformers.__version__)
+    st.write(str(transformers.__version__))
 
     st.title("French Text Difficulty Prediction")
     st.write("Automatically fetch and predict the difficulty of French news texts.")
