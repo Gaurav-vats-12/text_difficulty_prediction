@@ -4,7 +4,11 @@ import requests
 import os
 import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
-import sentencepiece
+try:
+    import sentencepiece
+    st.write('SentencePiece is successfully installed.')
+except ImportError:
+    st.write('Failed to install SentencePiece.')
 import tokenizers
 
 st.title('Levelingo')
