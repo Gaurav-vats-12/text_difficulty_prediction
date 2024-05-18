@@ -4,12 +4,14 @@ import requests
 import os
 import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
-try:
-    import sentencepiece
-    st.write('SentencePiece is successfully installed.')
-except ImportError:
-    st.write('Failed to install SentencePiece.')
+import sentencepiece
 import tokenizers
+from newsapi import NewsApiClient
+
+# NewsApi
+newsapi = NewsApiClient(api_key='e7c7cca4d5184b069f195de63ad0d86c')
+top_headlines = newsapi.get_top_headlines(language='fr', country='fr')
+
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
@@ -56,18 +58,23 @@ def setup_model():
         return None, None
 
 # Fetch french texts via newsapi
-def fetch_french_news():
-    url = f"https://newsapi.org/v2/top-headlines?country=fr&apiKey=e7c7cca4d5184b069f195de63ad0d86c"
-    response = requests.get(url)
-    articles = response.json().get('articles', [])
-    french_texts = [article['content'] for article in articles if article['content']]
-    return french_texts
+#def fetch_french_news():
+    #newsapi = NewsApiClient(api_key='e7c7cca4d5184b069f195de63ad0d86c')
+    #url = f"https://newsapi.org/v2/top-headlines?country=fr&apiKey=e7c7cca4d5184b069f195de63ad0d86c"
+    #response = requests.get(url)
+    #articles = response.json().get('articles', [])
+    #french_texts = [article['content'] for article in articles if article['content']]
+    #return french_texts
 
 def main():
     model, tokenizer = setup_model()
-    nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
-    if st.button('Fetch and Predict News'):
-        texts = fetch_french_news()
+    if model and tokenizer:
+        nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
+        
+        # Fetch French news headlines
+        top_headlines = newsapi.get_top_headlines(language='fr', country='fr')
+        texts = [article['title'] for article in top_headlines['articles'] if article['title']]
+        
         if texts:
             results = [nlp(text) for text in texts]
             for result in results:
