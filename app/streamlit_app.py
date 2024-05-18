@@ -6,15 +6,36 @@ import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
 import tokenizers
-from newsapi import NewsApiClient
-
-# NewsApi
-newsapi = NewsApiClient(api_key='e7c7cca4d5184b069f195de63ad0d86c')
-top_headlines = newsapi.get_top_headlines(language='fr', country='fr')
-
+#from newsapi import NewsApiClient
+#newsapi = NewsApiClient(api_key='e7c7cca4d5184b069f195de63ad0d86c')
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
+
+# Function to predict language level based on your algorithm
+def predict_language_level(text):
+    # Placeholder for your algorithm
+    num_words = len(text.split())
+    if num_words < 50:
+        return "A1"
+    elif num_words < 100:
+        return "A2"
+    elif num_words < 150:
+        return "B1"
+    elif num_words < 200:
+        return "B2"
+    elif num_words < 250:
+        return "C1"
+    else:
+        return "C2"
+
+# Fetch news articles from NewsAPI
+news_api_key = 'e7c7cca4d5184b069f195de63ad0d86c'
+def fetch_news(language='fr'):
+    url = f'https://newsapi.org/v2/top-headlines?country={language}&apiKey={news_api_key}&pageSize=10'
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
 
 # Load the model from GitHub
 def download_file_from_github(url, destination):
@@ -66,21 +87,28 @@ def setup_model():
     #french_texts = [article['content'] for article in articles if article['content']]
     #return french_texts
 
+# Main app logic
 def main():
-    model, tokenizer = setup_model()
-    if model and tokenizer:
-        nlp = pipeline("text-classification", model=model, tokenizer=tokenizer)
-        
-        # Fetch French news headlines
-        top_headlines = newsapi.get_top_headlines(language='fr', country='fr')
-        texts = [article['title'] for article in top_headlines['articles'] if article['title']]
-        
-        if texts:
-            results = [nlp(text) for text in texts]
-            for result in results:
-                st.write(result)
+    language = st.selectbox("Choose article language:", ["en", "fr"])  # Language selector
+
+    try:
+        articles_data = fetch_news(language)
+        if articles_data['status'] == 'ok' and articles_data['totalResults'] > 0:
+            for article in articles_data['articles']:
+                title = article['title']
+                description = article['description'] or "No description available"  # Fallback for empty description
+                url = article['url']
+                level = predict_language_level(description)  # Apply your algorithm
+
+                st.subheader(title)
+                st.write(description)
+                st.write(f"[Read more]({url})")
+                st.write(f"Predicted Language Level: {level}")
+                st.markdown("---")
         else:
-            st.write("No news content available or failed to fetch news.")
+            st.write("No articles found.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"An error occurred while fetching articles: {str(e)}")
 
 if __name__ == '__main__':
     main()
