@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 import os
 import transformers
-from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
+from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline, utils
 import sentencepiece
 
 st.title('Levelingo')
