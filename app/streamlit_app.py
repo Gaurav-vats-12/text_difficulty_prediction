@@ -23,11 +23,11 @@ def setup_model():
     # List of model files you need to download
     model_files = [
         'config.json',
-        'pytorch_model.bin',  # Assuming this is the name of your model file
-        'tokenizer_config.json',
+        'model.safetensors', 
+        'added_tokens.json',
         'special_tokens_map.json',
-        'vocab.txt',  # Adjust accordingly based on your tokenizer files
-        'sentencepiece.bpe.model'  # This might be not needed depending on tokenizer type
+        'tokenizer_config.json',  
+        'sentencepiece.bpe.model' 
     ]
 
     base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
@@ -36,7 +36,7 @@ def setup_model():
     for file_name in model_files:
         file_path = os.path.join(model_dir, file_name)
         if not os.path.exists(file_path):
-            download_file_from_github(f"{base_url}/{file_name}", file_path)
+            download_file_from_github(f"{base_url}{file_name}", file_path)
 
     # Load model and tokenizer
     tokenizer = CamembertTokenizer.from_pretrained(model_dir)
