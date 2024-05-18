@@ -6,3 +6,5 @@ requests
 textstat
 os
 transformers
+CamembertTokenizer
+CamembertForSequenceClassification
