@@ -49,7 +49,7 @@ def fetch_news():
     params = {
         'access_key': mediastack_api_key,
         'languages': "fr",
-        'categories': ','.join(categories) if categories else None,
+        'categories': ','.join(categories) if categories else ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'],
         'limit': 4  # Limit to 4 articles for demonstration
     }
     response = requests.get(base_url, params=params)
