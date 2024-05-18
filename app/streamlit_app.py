@@ -84,16 +84,26 @@ def main():
         articles_data = fetch_news()
         if articles_data['status'] == 'ok' and articles_data['totalResults'] > 0:
             for article in articles_data['articles']:
-                title = article['title']
-                description = article['description'] or "No description available"  # Fallback for empty description
-                url = article['url']
-                level = predict_language_level(description)  # Apply your algorithm
+                if article['content']:  # Ensure article has content
+                    title = article['title']
+                    description = article['description'] or "Pas de description disponible"
+                    url = article['url']
+                    urlToImage = article['urlToImage']
+                    content = article['content']
 
-                st.subheader(title)
-                st.write(description)
-                st.write(f"[Read more]({url})")
-                st.write(f"Predicted Language Level: {level}")
-                st.markdown("---")
+                    col1, col2 = st.columns([1, 3])
+                    with col1:
+                        if urlToImage:
+                            st.image(urlToImage, width=100)
+                    with col2:
+                        st.subheader(title)
+                        st.write(description)
+                        st.write(f"[Read more]({url})")
+
+                    # Toggle button to show/hide the content within the app
+                    if st.button("Show Content", key=title):
+                        st.write(content)
+                    st.markdown("---")
         else:
             st.write("No articles found.")
     except requests.exceptions.RequestException as e:
