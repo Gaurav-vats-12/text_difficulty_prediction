@@ -3,12 +3,12 @@ import streamlit as st
 import requests
 import os
 import transformers
-import sentencepiece 
-try:
-    import sentencepiece as spm
-    st.success('SentencePiece is successfully imported!')
-except ImportError as e:
-    st.error(f'Failed to import SentencePiece: {e}')
+#import sentencepiece 
+#try:
+    #import sentencepiece as spm
+    #st.success('SentencePiece is successfully imported!')
+#except ImportError as e:
+    #st.error(f'Failed to import SentencePiece: {e}')
 import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
