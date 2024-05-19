@@ -3,8 +3,8 @@ import streamlit as st
 import requests
 import os
 import transformers
-from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
+from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
 import streamlit.components.v1 as components
 
