@@ -29,14 +29,6 @@ def predict_language_level(text):
     else:
         return "C2"
 
-# Fetch news articles from NewsAPI
-news_api_key = 'e7c7cca4d5184b069f195de63ad0d86c'
-def fetch_news():
-    url = f'https://newsapi.org/v2/top-headlines?language=fr&apiKey={news_api_key}'
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
-
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
 base_url = "http://api.mediastack.com/v1/news"
@@ -58,7 +50,7 @@ def fetch_news():
         'access_key': mediastack_api_key,
         'languages': "fr",
         'categories': category,
-        'limit': 3  # Limit to 4 articles for demonstration
+        'limit': 1  
     }
     response = requests.get(base_url, params=params)
     if response.status_code == 200:
@@ -77,7 +69,9 @@ def main():
                     st.image(article['image'], width=300)
                     st.subheader(article['title'])
                     st.write(article['description'] if article['description'] else 'No description available.')
-                    st.markdown(f"[Read more]({article['url']})")
+                    # Button to open article in an iframe within the app
+                    if st.button("Read Now", key=article['title']):
+                        components.iframe(article['url'], height=600)
                     st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
@@ -127,4 +121,5 @@ def setup_model():
 
 if __name__ == '__main__':
     main()
+
 
