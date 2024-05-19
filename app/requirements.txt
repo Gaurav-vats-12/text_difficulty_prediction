@@ -2,7 +2,7 @@ streamlit
 requests
 torch
 tokenizers
-transformers==3.2.0
+transformers
 transformers[sentencepiece]
 sentencepiece
 newsapi-python
