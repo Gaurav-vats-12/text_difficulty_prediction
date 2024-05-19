@@ -4,16 +4,22 @@ import requests
 import os
 import transformers
 import sentencepiece 
-try:
-    import sentencepiece as spm
-    st.success('SentencePiece is successfully imported!')
-except ImportError as e:
-    st.error(f'Failed to import SentencePiece: {e}')
+import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
 import streamlit.components.v1 as components
 
 st.title('Levelingo')
+
+# Specify the directory where your model and tokenizer are saved
+model_path = "app/cache"
+tokenizer_path = "app/cache"
+
+# Load the tokenizer and model
+tokenizer = CamembertTokenizer.from_pretrained(tokenizer_path)
+model = CamembertForSequenceClassification.from_pretrained(model_path)
+model.eval()  # Set the model to evaluation mode
+
 
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
