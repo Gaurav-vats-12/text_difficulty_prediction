@@ -3,5 +3,6 @@ requests
 torch
 tokenizers
 transformers
+transformers[sentencepiece]
 sentencepiece
 newsapi-python
