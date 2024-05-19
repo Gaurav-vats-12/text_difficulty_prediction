@@ -12,8 +12,8 @@ import streamlit.components.v1 as components
 st.title('Levelingo')
 
 # Specify the directory where your model and tokenizer are saved
-model_path = "app/cache"
-tokenizer_path = "app/cache"
+model_path = "cache"
+tokenizer_path = "cache"
 
 # Load the tokenizer and model
 tokenizer = CamembertTokenizer.from_pretrained(tokenizer_path)
