@@ -114,7 +114,7 @@ def main():
         st.write("No articles found. Try adjusting your filters.")
 
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+    #main()
 
 
