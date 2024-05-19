@@ -13,6 +13,7 @@ import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
 import streamlit.components.v1 as components
+import traceback
 
 st.title('Levelingo')
 
@@ -84,6 +85,8 @@ def setup_model():
         model = CamembertForSequenceClassification.from_pretrained(model_dir)
         return model, tokenizer
     except Exception as e:
+        st.text("Error details:")
+        st.text(traceback.format_exc())  # This prints the traceback of the exception
         st.error(f"Error loading model or tokenizer: {str(e)}")
         return None, None
         
