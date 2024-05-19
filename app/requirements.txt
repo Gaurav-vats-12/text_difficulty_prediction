@@ -1,7 +1,7 @@
 streamlit
 tokenizers
 transformers==4.40.2
-torch==1.10.0  
+torch
 tensorflow==2.15.0
 sentencepiece==0.1.99
 streamlit
