@@ -1,7 +1,7 @@
 streamlit
 requests
 torch
-tokenizers==0.10.1  
-transformers==4.15.0
-sentencepiece==0.1.96
+tokenizers
+transformers
+sentencepiece
 newsapi-python
