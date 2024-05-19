@@ -7,3 +7,4 @@ transformers[sentencepiece]
 sentencepiece
 newsapi-python
 tensorflow
+pytorch
