@@ -42,7 +42,7 @@ mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
 base_url = "http://api.mediastack.com/v1/news"
 
 # Select options for the API request
-categories = st.multiselect("Choose categories:", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'])
+categories = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'])
 
 # Function to check if the image URL is valid
 def is_valid_image_url(url):
@@ -57,8 +57,8 @@ def fetch_news():
     params = {
         'access_key': mediastack_api_key,
         'languages': "fr",
-        'categories': ','.join(categories) if categories else '',
-        'limit': 4  # Limit to 4 articles for demonstration
+        'categories': ','.join(categories) if categories else 'business',
+        'limit': 3  # Limit to 4 articles for demonstration
     }
     response = requests.get(base_url, params=params)
     if response.status_code == 200:
