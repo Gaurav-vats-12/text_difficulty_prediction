@@ -4,6 +4,6 @@ transformers==4.40.2
 torch==1.10.0  
 tensorflow==2.15.0
 sentencepiece==0.1.99
-streamlit==1.10.0  
+streamlit
 requests>=2.31.0
 
