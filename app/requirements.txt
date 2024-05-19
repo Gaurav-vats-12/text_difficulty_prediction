@@ -1,8 +1,7 @@
-streamlit
+streamlit>=1.0
 requests
-torch
-tokenizers
-transformers
-transformers[sentencepiece]
+torch>=1.6
+tokenizers>=0.10.1,<0.11
+transformers[sentencepiece]==4.15.0
 sentencepiece
 newsapi-python
