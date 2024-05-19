@@ -7,6 +7,7 @@ import sentencepiece
 import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
+import tokenizers[sentencepiece]
 import streamlit.components.v1 as components
 
 st.title('Levelingo')
