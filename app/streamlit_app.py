@@ -6,8 +6,7 @@ import transformers
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import sentencepiece
 import tokenizers
-#from newsapi import NewsApiClient
-#newsapi = NewsApiClient(api_key='e7c7cca4d5184b069f195de63ad0d86c')
+import streamlit.components.v1 as components
 
 st.title('Levelingo')
 st.write('Welcome to Levelingo!')
