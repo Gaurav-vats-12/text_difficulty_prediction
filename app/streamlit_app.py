@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 import os
 import transformers
-#import sentencepiece 
+import sentencepiece spm
 #try:
     #import sentencepiece as spm
     #st.success('SentencePiece is successfully imported!')
