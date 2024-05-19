@@ -6,3 +6,4 @@ transformers
 transformers[sentencepiece]
 sentencepiece
 newsapi-python
+tensorflow
