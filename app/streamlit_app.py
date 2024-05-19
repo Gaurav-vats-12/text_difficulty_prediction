@@ -70,7 +70,7 @@ def main():
                     st.write(article['description'] if article['description'] else 'No description available.')
                     # Button to open article in an iframe within the app
                     with st.expander("Read Now"):
-                        components.iframe(article['url'])
+                        components.iframe(article['url'], height=450, scrolling=True)
                     st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
