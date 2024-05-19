@@ -44,6 +44,14 @@ base_url = "http://api.mediastack.com/v1/news"
 # Select options for the API request
 categories = st.multiselect("Choose categories:", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'])
 
+# Function to check if the image URL is valid
+def is_valid_image_url(url):
+    try:
+        response = requests.head(url, timeout=5)
+        return response.status_code == 200 and 'image' in response.headers['Content-Type']
+    except requests.RequestException:
+        return False
+        
 # Fetch news articles from mediastack API
 def fetch_news():
     params = {
@@ -64,15 +72,13 @@ def main():
     articles = fetch_news()
     if articles:
         for article in articles:
-            st.image(article['image'] if article['image'] else '')
-            st.subheader(article['title'])
-            st.write('Published At:', article['published_at'])
-            st.write(article['description'] if article['description'] else 'No description available.')
-            
-            # Expandable section to show article content
-            with st.expander("Show Content"):
-                st.write(article['content'] if article['content'] else 'Content not available.')
-            st.markdown("---")
+           if article['image'] and is_valid_image_url(article['image']):
+                with st.container():
+                    st.image(article['image'], width=300)
+                    st.subheader(article['title'])
+                    st.write(article['description'] if article['description'] else 'No description available.')
+                    st.markdown(f"[Read more]({article['url']})")
+                    st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
 
