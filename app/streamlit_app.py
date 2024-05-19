@@ -11,16 +11,6 @@ import streamlit.components.v1 as components
 
 st.title('Levelingo')
 
-# Specify the directory where your model and tokenizer are saved
-model_path = "cache"
-tokenizer_path = "cache"
-
-# Load the tokenizer and model
-tokenizer = CamembertTokenizer.from_pretrained(tokenizer_path)
-model = CamembertForSequenceClassification.from_pretrained(model_path)
-model.eval()  # Set the model to evaluation mode
-
-
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
 base_url = "http://api.mediastack.com/v1/news"
@@ -114,7 +104,7 @@ def main():
         st.write("No articles found. Try adjusting your filters.")
 
 
-#if __name__ == '__main__':
-    #main()
+if __name__ == '__main__':
+    main()
 
 
