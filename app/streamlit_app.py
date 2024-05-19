@@ -14,6 +14,14 @@ from transformers import CamembertTokenizer, CamembertForSequenceClassification,
 import tokenizers
 import streamlit.components.v1 as components
 import traceback
+import sys
+
+# Display the title
+st.title('Python Environment Information')
+
+# Display the Python version
+python_version = sys.version
+st.write(f"Python version used in this environment: {python_version}")
 
 st.title('Levelingo')
 
