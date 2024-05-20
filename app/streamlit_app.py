@@ -185,6 +185,7 @@ def main():
         for idx, (sentence, level) in enumerate(sentences):
             if st.button(sentence, key=f"assessment_{idx}"):
                 user_id = 'default_user'
+                ensure_user_data()
                 st.session_state['users'][user_id]['level'] = level
                 st.session_state['initial_assessment'] = False
                 
