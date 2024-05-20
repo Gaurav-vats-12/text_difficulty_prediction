@@ -197,15 +197,12 @@ def main():
                 st.session_state['initial_assessment'] = False
                 
     else:
-        # Title
         st.title('Curated articles just for you')
         st.subheader('Read, learn, and grow at your own pace!')
 
-        # Select options for the API request
         category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
         st.markdown("---")
 
-        # Sidebar elements
         with st.sidebar:
             logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/baguette_logo.png"
             st.image(logo_url, width=200)
@@ -221,28 +218,29 @@ def main():
 
         articles = fetch_news(category)
         if articles:
-            articles = assign_article_levels(articles, model, tokenizer) 
-            articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
-            for idx, article in enumerate(articles):
-                with st.container():
-                    # First row for image and level
-                    col1, col2 = st.columns([0.9, 0.1])
-                    with col1:
-                        st.image(article['image'], width=300)
-                    with col2:
-                        st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
-                    st.subheader(article['title'])
-                    st.write(article['description'])
-                    with st.expander("Read Now"):
-                        components.iframe(article['url'], height=450, scrolling=True)
-                        cols = st.columns(4)
-                        feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
-                        for i, option in enumerate(feedback_options):
-                            if cols[i].button(option, key=f"feedback_{idx}_{i}"):
-                                new_level = update_user_level(user_id, option)
-                                st.session_state['users'][user_id]['level'] = new_level
-                                st.experimental_rerun()
-                    st.markdown("---")
+            model, tokenizer = setup_model()
+            if model and tokenizer:
+                articles = assign_article_levels(articles, model, tokenizer)
+                articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
+                for idx, article in enumerate(articles):
+                    with st.container():
+                        col1, col2 = st.columns([0.9, 0.1])
+                        with col1:
+                            st.image(article['image'], width=300)
+                        with col2:
+                            st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
+                        st.subheader(article['title'])
+                        st.write(article['description'])
+                        with st.expander("Read Now"):
+                            components.iframe(article['url'], height=450, scrolling=True)
+                            cols = st.columns(4)
+                            feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
+                            for i, option in enumerate(feedback_options):
+                                if cols[i].button(option, key=f"feedback_{idx}_{i}"):
+                                    new_level = update_user_level(user_id, option)
+                                    st.session_state['users'][user_id]['level'] = new_level
+                                    st.experimental_rerun()
+                        st.markdown("---")
         else:
             st.write("No articles found. Try adjusting your filters.")
 
