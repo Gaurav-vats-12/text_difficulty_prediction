@@ -33,7 +33,7 @@ mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
 base_url = "http://api.mediastack.com/v1/news"
         
 # Fetch news articles from mediastack API
-def fetch_news():
+def fetch_news(category):
     params = {
         'access_key': mediastack_api_key,
         'languages': "fr",
@@ -157,7 +157,7 @@ def main():
     # Select options for the API request
     category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
 
-    articles = fetch_news()
+    articles = fetch_news(category)
     if articles:
         articles = assign_article_levels(articles) 
         articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
