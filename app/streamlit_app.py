@@ -33,6 +33,7 @@ st.subheader('Read, learn, and grow at your own pace!')
 
 # Select options for the API request
 category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
+st.markdown("---")
 
 # Sidebar elements
 with st.sidebar:
