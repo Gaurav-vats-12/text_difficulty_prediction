@@ -16,6 +16,17 @@ import streamlit.components.v1 as components
 import traceback
 from itertools import cycle  
 
+
+# Initialize user data and levels
+cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+default_user_data = {'default_user': {'level': 'A1', 'feedback_points': 0}}
+
+# Function to ensure that user data is initialized in session state
+def ensure_user_data():
+    if 'users' not in st.session_state:
+        st.session_state['users'] = default_user_data.copy()
+
+
 # App Structure
 st.title('Levelingo')
 # Select options for the API request
@@ -27,16 +38,6 @@ with st.sidebar:
     ensure_user_data()
     user_level = st.session_state['users'][user_id]['level']
     st.subheader(f"Your current level: {user_level}")
-
-
-# Initialize user data and levels
-cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
-default_user_data = {'default_user': {'level': 'A1', 'feedback_points': 0}}
-
-# Function to ensure that user data is initialized in session state
-def ensure_user_data():
-    if 'users' not in st.session_state:
-        st.session_state['users'] = default_user_data.copy()
 
 
 
