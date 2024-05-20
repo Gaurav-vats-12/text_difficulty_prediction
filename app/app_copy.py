@@ -16,6 +16,8 @@ import streamlit.components.v1 as components
 import traceback
 from itertools import cycle  
 
+# Set Streamlit page configuration
+st.set_page_config(layout='wide', page_title="Levelingo French Learning")
 
 # Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
