@@ -147,18 +147,33 @@ def update_user_level(user_id, feedback):
 
         
 def main():
+    st.set_page_config(layout="wide")  # Use the full page width
+
     if 'start' not in st.session_state:
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
     
     if not st.session_state['start']:
-        # Introductory screen
-        st.markdown("<style>div.row-widget.stButton > button:first-child {margin: 0 auto;}</style>", unsafe_allow_html=True)
-        st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200, output_format='JPEG')
-        col1, col2, col3 = st.columns([1,2,1])
-        with col2:
-            st.markdown("## From 'Oui Oui' to Fluent", unsafe_allow_html=True)
-            if st.button("Start your journey to master French now", key="start_button"):
-                st.session_state['start'] = True
+        # Introductory screen with custom CSS for vertical centering
+        st.markdown("""
+            <style>
+                .fullScreen {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    height: 100vh;
+                }
+                div.row-widget.stButton > button {
+                    display: block;
+                    margin: 0 auto;
+                }
+            </style>
+        """, unsafe_allow_html=True)
+        st.markdown('<div class="fullScreen">', unsafe_allow_html=True)
+        st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200)
+        st.markdown("## From 'Oui Oui' to Fluent")
+        if st.button("Start your journey to master French now"):
+            st.session_state['start'] = True
+        st.markdown('</div>', unsafe_allow_html=True)
 
     else:
         # Title
