@@ -197,7 +197,7 @@ def main():
             for idx, article in enumerate(articles):
                 with st.container():
                     # First row for image and level
-                    col1, col2 = st.columns([0.8, 0.2])
+                    col1, col2 = st.columns([0.9, 0.1])
                     with col1:
                         st.image(article['image'], width=300)
                     with col2:
