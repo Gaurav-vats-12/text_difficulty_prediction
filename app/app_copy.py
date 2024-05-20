@@ -221,7 +221,7 @@ def main():
 
         articles = fetch_news(category)
         if articles:
-            articles = assign_article_levels(articles) 
+            articles = assign_article_levels(articles, model, tokenizer) 
             articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
             for idx, article in enumerate(articles):
                 with st.container():
