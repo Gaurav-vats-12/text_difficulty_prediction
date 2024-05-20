@@ -6,4 +6,5 @@ tensorflow
 sentencepiece
 streamlit
 requests
+json
 
