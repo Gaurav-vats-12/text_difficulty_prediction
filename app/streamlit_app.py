@@ -117,7 +117,7 @@ def update_user_level(user_id, feedback):
     ensure_user_data()
 
     # Access the user data safely from session state
-    feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
+    feedback_points = {'Too Easy': 1, 'Just Right': 0.5, 'Challenging': 0.5, 'Too Difficult': -1}
     user_data = st.session_state['users'][user_id]
     user_data['feedback_points'] += feedback_points[feedback]
     
@@ -164,7 +164,7 @@ def main():
             with cent_co:
                 st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_baguette.png")
             st.markdown("<h1 style='text-align: center; color: black;'>From 'Oui Oui' to Fluent</h1>", unsafe_allow_html=True)
-            if st.button("Start your journey to master French now", key='start'):
+            if st.button("Start your journey to master French now"):
                 st.session_state['start'] = True
                 
     else:
