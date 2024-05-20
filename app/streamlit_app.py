@@ -152,28 +152,33 @@ def main():
     if 'start' not in st.session_state:
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
     
+    # CSS to center content in the middle of the page
+    st.markdown("""
+        <style>
+            .centered {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            .btn {
+                width: 300px;  # Set button width
+                height: 50px;  # Set button height
+                font-size: 20px;  # Increase font size
+                font-weight: bold;  # Make font bold
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     if not st.session_state['start']:
-        # Introductory screen with custom CSS for vertical centering
-        st.markdown("""
-            <style>
-                .fullScreen {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    height: 100vh;
-                }
-                div.row-widget.stButton > button {
-                    display: block;
-                    margin: 0 auto;
-                }
-            </style>
-        """, unsafe_allow_html=True)
-        st.markdown('<div class="fullScreen">', unsafe_allow_html=True)
-        st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200)
-        st.markdown("## From 'Oui Oui' to Fluent")
-        if st.button("Start your journey to master French now"):
-            st.session_state['start'] = True
-        st.markdown('</div>', unsafe_allow_html=True)
+        # Create a container to center the image and button
+        with st.container():
+            st.markdown('<div class="centered">', unsafe_allow_html=True)
+            st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=150)
+            st.markdown("## From 'Oui Oui' to Fluent")
+            if st.button("Start your journey to master French now", key='start', on_click=lambda: st.session_state.update({'start': True}), kwargs={"class": "btn"}):
+                st.session_state['start'] = True
+            st.markdown('</div>', unsafe_allow_html=True)
 
     else:
         # Title
