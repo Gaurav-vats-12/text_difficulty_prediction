@@ -4,7 +4,7 @@ import requests
 import os
 import transformers
 import sentencepiece 
-##try:
+#try:
     ##import sentencepiece as spm
     #st.success('SentencePiece is successfully imported!')
 #except ImportError as e:
@@ -82,15 +82,15 @@ def setup_model():
             download_file_from_github(f"{github_base_url}{file_name}", file_path)
 
     # Load model and tokenizer
-    try:
-        tokenizer = CamembertTokenizer.from_pretrained(model_dir)
+    #try:
+        #tokenizer = CamembertTokenizer.from_pretrained(model_dir)
         model = CamembertForSequenceClassification.from_pretrained(model_dir)
-        return model, tokenizer
-    except Exception as e:
-        st.text("Error details:")
-        st.text(traceback.format_exc())  # This prints the traceback of the exception
-        st.error(f"Error loading model or tokenizer: {str(e)}")
-        return None, None
+        #return model, tokenizer
+    #except Exception as e:
+        #st.text("Error details:")
+        #st.text(traceback.format_exc())  # This prints the traceback of the exception
+        #st.error(f"Error loading model or tokenizer: {str(e)}")
+        #return None, None
         
 def main():
     #model, tokenizer = setup_model()
