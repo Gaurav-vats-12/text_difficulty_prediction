@@ -117,7 +117,7 @@ def setup_model():
     # Load model and tokenizer
     #try:
         #tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-        model = CamembertForSequenceClassification.from_pretrained(model_dir)
+        #model = CamembertForSequenceClassification.from_pretrained(model_dir)
         #return model, tokenizer
     #except Exception as e:
         #st.text("Error details:")
@@ -164,38 +164,49 @@ def update_user_level(user_id, feedback):
 
         
 def main():
-    ensure_user_data()
+    if 'start' not in st.session_state:
+        st.session_state['start'] = False  # This keeps track of whether the user has started the app
     
-    user_id = 'default_user'    
-    user_level = st.session_state['users'][user_id]['level']
+    if not st.session_state['start']:
+        # Introductory screen
+        st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200)
+        st.title("From 'Oui Oui' to Fluent")
+        if st.button("Start your journey to master French now"):
+            st.session_state['start'] = True
 
-    articles = fetch_news(category)
-    if articles:
-        articles = assign_article_levels(articles) 
-        articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
-        for idx, article in enumerate(articles):
-            with st.container():
-                # First row for image and level
-                col1, col2 = st.columns([0.8, 0.2])
-                with col1:
-                    st.image(article['image'], width=300)
-                with col2:
-                    st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
-
-                st.subheader(article['title'])
-                st.write(article['description'])
-                with st.expander("Read Now"):
-                    components.iframe(article['url'], height=450, scrolling=True)
-                    cols = st.columns(4)
-                    feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
-                    for i, option in enumerate(feedback_options):
-                        if cols[i].button(option, key=f"feedback_{idx}_{i}"):
-                            new_level = update_user_level(user_id, option)
-                            st.session_state['users'][user_id]['level'] = new_level
-                            st.experimental_rerun()
-                st.markdown("---")
     else:
-        st.write("No articles found. Try adjusting your filters.")
+        ensure_user_data()
+    
+        user_id = 'default_user'    
+        user_level = st.session_state['users'][user_id]['level']
+
+        articles = fetch_news(category)
+        if articles:
+            articles = assign_article_levels(articles) 
+            articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
+            for idx, article in enumerate(articles):
+                with st.container():
+                    # First row for image and level
+                    col1, col2 = st.columns([0.8, 0.2])
+                    with col1:
+                        st.image(article['image'], width=300)
+                    with col2:
+                        st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
+
+                    st.subheader(article['title'])
+                    st.write(article['description'])
+                    with st.expander("Read Now"):
+                        components.iframe(article['url'], height=450, scrolling=True)
+                        cols = st.columns(4)
+                        feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
+                        for i, option in enumerate(feedback_options):
+                            if cols[i].button(option, key=f"feedback_{idx}_{i}"):
+                                new_level = update_user_level(user_id, option)
+                                st.session_state['users'][user_id]['level'] = new_level
+                                st.experimental_rerun()
+                    st.markdown("---")
+        else:
+            st.write("No articles found. Try adjusting your filters.")
 
 
 if __name__ == '__main__':
