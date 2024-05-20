@@ -116,17 +116,22 @@ def setup_model():
 
 # Function to update user level based on feedback
 def update_user_level(user_id, feedback):
+    # Make sure user data is available
+    ensure_user_data()
+
+    # Access the user data safely from session state
     feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
-    
-    user_data = users[user_id]
+    user_data = st.session_state['users'][user_id]
     user_data['feedback_points'] += feedback_points[feedback]
     
     # Thresholds for level change
     upgrade_threshold = 3 # Points needed to move up a level
     downgrade_threshold = -3 # Points needed to move down a level
-    
+
+    # Accessing CEFR levels
     current_index = cefr_levels.index(user_data['level'])
-    
+
+    # Level Change
     if user_data['feedback_points'] >= upgrade_threshold:
         new_index = min(current_index + 1, len(cefr_levels) - 1)
         user_data['level'] = cefr_levels[new_index]
@@ -135,6 +140,9 @@ def update_user_level(user_id, feedback):
         new_index = max(current_index - 1, 0)
         user_data['level'] = cefr_levels[new_index]
         user_data['feedback_points'] = 0 # Reset points after level change
+
+    # Update the user data in session state
+    st.session_state['users'][user_id] = user_data
         
     return user_data['level']
 
