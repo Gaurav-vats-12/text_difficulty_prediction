@@ -5,7 +5,7 @@ import os
 import transformers
 #import sentencepiece 
 try:
-    #import sentencepiece
+    import sentencepiece
     st.success('SentencePiece is successfully imported!')
 except ImportError as e:
     st.error(f'Failed to import SentencePiece: {e}')
