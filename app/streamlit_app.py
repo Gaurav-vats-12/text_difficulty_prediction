@@ -175,9 +175,14 @@ def main():
         articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
         for idx, article in enumerate(articles):
             with st.container():
-                st.image(article['image'], width=300)
+                # First row for image and level
+                col1, col2 = st.columns([0.8, 0.2])
+                with col1:
+                    st.image(article['image'], width=300)
+                with col2:
+                    st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
+
                 st.subheader(article['title'])
-                st.write(f"Level: {article['level']}")
                 st.write(article['description'])
                 with st.expander("Read Now"):
                     components.iframe(article['url'], height=450, scrolling=True)
