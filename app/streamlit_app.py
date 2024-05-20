@@ -14,9 +14,43 @@ from transformers import CamembertTokenizer, CamembertForSequenceClassification,
 import tokenizers
 import streamlit.components.v1 as components
 import traceback
-import sys
+import json
 
-st.title('Levelingo')
+
+# Initialize user data storage
+if 'users' not in st.session_state:
+    st.session_state['users'] = {}
+
+# CEFR levels
+cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+
+# Function to update user level based on feedback
+def update_user_level(user_id, feedback):
+    feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
+    users = st.session_state['users']
+    if user_id not in users:
+        users[user_id] = {'feedback_points': 0, 'level': 'A1'}  # Initialize new user
+
+    user_data = users[user_id]
+    user_data['feedback_points'] += feedback_points[feedback]
+
+    # Thresholds for level change
+    upgrade_threshold = 3  # Points needed to move up a level
+    downgrade_threshold = -3  # Points needed to move down a level
+
+    current_index = cefr_levels.index(user_data['level'])
+    if user_data['feedback_points'] >= upgrade_threshold:
+        new_index = min(current_index + 1, len(cefr_levels) - 1)
+        user_data['level'] = cefr_levels[new_index]
+        user_data['feedback_points'] = 0  # Reset points after level change
+    elif user_data['feedback_points'] <= downgrade_threshold:
+        new_index = max(current_index - 1, 0)
+        user_data['level'] = cefr_levels[new_index]
+        user_data['feedback_points'] = 0
+
+    return user_data['level']
+
+
 
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
@@ -48,6 +82,14 @@ def fetch_news():
     else:
         st.error('Failed to retrieve news articles.')
         return []
+
+
+
+# Dummy function to assign levels to articles
+def assign_article_levels(articles):
+    for article in articles:
+        article['level'] = random.choice(cefr_levels)
+    return articles
 
 # Load the model from GitHub
 def download_file_from_github(url, destination):
@@ -91,24 +133,67 @@ def setup_model():
         #st.text(traceback.format_exc())  # This prints the traceback of the exception
         #st.error(f"Error loading model or tokenizer: {str(e)}")
         #return None, None
+
+
+
+# Function to update user level based on feedback
+def update_user_level(user_id, feedback):
+    feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
+    users = st.session_state['users']
+    if user_id not in users:
+        users[user_id] = {'feedback_points': 0, 'level': 'A1'}  # Initialize new user
+
+    user_data = users[user_id]
+    user_data['feedback_points'] += feedback_points[feedback]
+
+    upgrade_threshold = 3
+    downgrade_threshold = -3
+    current_index = cefr_levels.index(user_data['level'])
+    if user_data['feedback_points'] >= upgrade_threshold:
+        new_index = min(current_index + 1, len(cefr_levels) - 1)
+        user_data['level'] = cefr_levels[new_index]
+        user_data['feedback_points'] = 0
+    elif user_data['feedback_points'] <= downgrade_threshold:
+        new_index = max(current_index - 1, 0)
+        user_data['level'] = cefr_levels[new_index]
+        user_data['feedback_points'] = 0
+
+    return user_data['level']
+
+
         
 def main():
-    #model, tokenizer = setup_model()
-    #if not model or not tokenizer:
-        #st.error("Failed to load the NLP model and tokenizer.")
-        #return
-        
+    user_id = 'user123'  # Example user ID
+
+    st.title('Levelingo')
+    user_level = st.session_state['users'].get(user_id, {}).get('level', 'A1')
+    st.write(f"Your current level: {user_level}")
+
     articles = fetch_news()
     if articles:
+        articles = assign_article_levels(articles)  # Assign levels to each article
+        articles = [article for article in articles if article['level'] == user_level]  # Filter articles by user's level
+
         for article in articles:
-           if article['image'] and is_valid_image_url(article['image']):
+            if article['image'] and is_valid_image_url(article['image']):
                 with st.container():
                     st.image(article['image'], width=300)
                     st.subheader(article['title'])
+                    st.write(f"Level: {article['level']}")
                     st.write(article['description'] if article['description'] else 'No description available.')
-                    # Button to open article in an iframe within the app
                     with st.expander("Read Now"):
                         components.iframe(article['url'], height=450, scrolling=True)
+
+                    feedback = st.radio(
+                        "How difficult did you find this article?",
+                        ('Too Easy', 'Just Right', 'Challenging', 'Too Difficult'),
+                        key=article['title']  # Ensure unique key for each radio
+                    )
+                    
+                    if st.button('Submit Feedback', key=article['title']):
+                        new_level = update_user_level(user_id, feedback)
+                        st.session_state['users'][user_id]['level'] = new_level
+                        st.experimental_rerun()  # Rerun the app to update displayed articles
                     st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
