@@ -29,7 +29,7 @@ def ensure_user_data():
 
 # Title
 st.title('Curated articles just for you')
-st.subtitle('Read, learn, and grow at your own pace!')
+st.subheader('Read, learn, and grow at your own pace!')
 
 # Select options for the API request
 category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
