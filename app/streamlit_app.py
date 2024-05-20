@@ -14,8 +14,7 @@ from transformers import CamembertTokenizer, CamembertForSequenceClassification,
 import tokenizers
 import streamlit.components.v1 as components
 import traceback
-import json
-import random
+from itertools import cycle  # Import the cycle function from itertools
 
 # Initialize user data storage
 if 'users' not in st.session_state:
