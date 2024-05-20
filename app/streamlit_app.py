@@ -153,49 +153,14 @@ def main():
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
     
     if not st.session_state['start']:
-        st.markdown("""
-            <style>
-                /* Full screen and centering styles */
-                .fullScreen {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                }
-                /* Button styling */
-                div.row-widget.stButton > button {
-                    display: block;
-                    margin: 20px auto;
-                    width: 80%;
-                }
-                /* Vertical centering within the column */
-                .vertical-center {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    height: 100%;
-                }
-            </style>
-            """, unsafe_allow_html=True)
-
-        # Fullscreen container for centering content
-        with st.container():
-            st.markdown('<div class="fullScreen">', unsafe_allow_html=True)
-            col1, col2, col3 = st.columns([1,2,1])
-            with col1:
-                st.write("")
-            with col2:
-                st.markdown('<div class="vertical-center">', unsafe_allow_html=True)
-                st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200)
-                st.markdown("<h1 style='text-align: center; color: black;'>From 'Oui Oui' to Fluent</h1>", unsafe_allow_html=True)
-                if st.button("Start your journey to master French now", key='start'):
-                    st.session_state['start'] = True
-                st.markdown('</div>', unsafe_allow_html=True)
-            with col3:
-                st.write("")
-            st.markdown('</div>', unsafe_allow_html=True)
-
+        st.markdown("<style>div.row-widget.stButton > button:first-child {margin: 0 auto; display: block;}</style>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1,2,1])
+        with col2:
+            st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200)
+            st.markdown("<h1 style='text-align: center; color: black;'>From 'Oui Oui' to Fluent</h1>", unsafe_allow_html=True)
+            if st.button("Start your journey to master French now", key='start'):
+                st.session_state['start'] = True
+                
     else:
         # Title
         st.title('Curated articles just for you')
