@@ -152,10 +152,13 @@ def main():
     
     if not st.session_state['start']:
         # Introductory screen
-        st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200)
-        st.title("From 'Oui Oui' to Fluent")
-        if st.button("Start your journey to master French now"):
-            st.session_state['start'] = True
+        st.markdown("<style>div.row-widget.stButton > button:first-child {margin: 0 auto;}</style>", unsafe_allow_html=True)
+        st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg", width=200, output_format='JPEG')
+        col1, col2, col3 = st.columns([1,2,1])
+        with col2:
+            st.markdown("## From 'Oui Oui' to Fluent", unsafe_allow_html=True)
+            if st.button("Start your journey to master French now", key="start_button"):
+                st.session_state['start'] = True
 
     else:
         # Title
