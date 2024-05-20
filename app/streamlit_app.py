@@ -14,14 +14,15 @@ from transformers import CamembertTokenizer, CamembertForSequenceClassification,
 import tokenizers
 import streamlit.components.v1 as components
 import traceback
-from itertools import cycle  # Import the cycle function from itertools
+from itertools import cycle  
 
 # Initialize user data storage
 if 'users' not in st.session_state:
     st.session_state['users'] = {}
 
-# CEFR levels
+# Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+users = {'user_id': {'level': 'A1', 'feedback_points': 0}}
 
 
 
@@ -42,7 +43,7 @@ def is_valid_image_url(url):
         return False
         
 # Fetch news articles from mediastack API
-@st.cache
+@st.cache_data(allow_output_mutation=True)
 def fetch_news():
     params = {
         'access_key': mediastack_api_key,
@@ -116,65 +117,61 @@ def setup_model():
 # Function to update user level based on feedback
 def update_user_level(user_id, feedback):
     feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
-    users = st.session_state['users']
-    if user_id not in users:
-        users[user_id] = {'feedback_points': 0, 'level': 'A1'}  # Initialize new user
-
+    
     user_data = users[user_id]
     user_data['feedback_points'] += feedback_points[feedback]
-
+    
     # Thresholds for level change
-    upgrade_threshold = 3  # Points needed to move up a level
-    downgrade_threshold = -3  # Points needed to move down a level
-
+    upgrade_threshold = 3 # Points needed to move up a level
+    downgrade_threshold = -3 # Points needed to move down a level
+    
     current_index = cefr_levels.index(user_data['level'])
     if user_data['feedback_points'] >= upgrade_threshold:
         new_index = min(current_index + 1, len(cefr_levels) - 1)
         user_data['level'] = cefr_levels[new_index]
-        user_data['feedback_points'] = 0  # Reset points after level change
+        user_data['feedback_points'] = 0
     elif user_data['feedback_points'] <= downgrade_threshold:
         new_index = max(current_index - 1, 0)
         user_data['level'] = cefr_levels[new_index]
         user_data['feedback_points'] = 0
-
+        
     return user_data['level']
 
 
 
         
 def main():
-    user_id = 'user123'  # Example user ID
-
     st.title('Levelingo')
-    user_level = st.session_state['users'].get(user_id, {}).get('level', 'A1')
+    user_id = 'default_user'
+    if 'users' not in st.session_state:
+        st.session_state['users'] = users
+    
+    user_level = st.session_state['users'][user_id]['level']
     st.write(f"Your current level: {user_level}")
 
     articles = fetch_news()
     if articles:
-        articles = assign_article_levels(articles)  # Assign levels to each article
-        articles = [article for article in articles if article['level'] == user_level]  # Filter articles by user's level
+        articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
+        for idx, article in enumerate(articles):
+            with st.container():
+                st.image(article['image'], width=300)
+                st.subheader(article['title'])
+                st.write(f"Level: {article['level']}")
+                st.write(article['description'])
+                with st.expander("Read Now"):
+                    components.iframe(article['url'], height=450, scrolling=True)
 
-        for article in articles:
-            if article['image'] and is_valid_image_url(article['image']):
-                with st.container():
-                    st.image(article['image'], width=300)
-                    st.subheader(article['title'])
-                    st.write(f"Level: {article['level']}")
-                    st.write(article['description'] if article['description'] else 'No description available.')
-                    with st.expander("Read Now"):
-                        components.iframe(article['url'], height=450, scrolling=True)
+                feedback = st.radio(
+                    "How difficult did you find this article?",
+                    ('Too Easy', 'Just Right', 'Challenging', 'Too Difficult'),
+                    key=f"feedback_{idx}"  # Unique key for each radio
+                )
 
-                    feedback = st.radio(
-                        "How difficult did you find this article?",
-                        ('Too Easy', 'Just Right', 'Challenging', 'Too Difficult'),
-                        key=article['title']  # Ensure unique key for each radio
-                    )
-                    
-                    if st.button('Submit Feedback', key=article['title']):
-                        new_level = update_user_level(user_id, feedback)
-                        st.session_state['users'][user_id]['level'] = new_level
-                        st.experimental_rerun()  # Rerun the app to update displayed articles
-                    st.markdown("---")
+                if st.button('Submit Feedback', key=f"submit_{idx}"):
+                    new_level = update_user_level(user_id, feedback)
+                    st.session_state['users'][user_id]['level'] = new_level
+                    st.experimental_rerun()  # Rerun the app to update displayed articles
+                st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
 
