@@ -20,7 +20,13 @@ from itertools import cycle
 st.title('Levelingo')
 # Select options for the API request
 category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
-
+# Sidebar elements
+with st.sidebar:
+    st.header("Settings")
+    user_id = 'default_user'
+    ensure_user_data()
+    user_level = st.session_state['users'][user_id]['level']
+    st.subheader(f"Your current level: {user_level}")
 
 
 # Initialize user data and levels
