@@ -15,9 +15,7 @@ import tokenizers
 import streamlit.components.v1 as components
 import traceback
 import json
-
-st.write("test")
-
+import random
 
 # Initialize user data storage
 if 'users' not in st.session_state:
