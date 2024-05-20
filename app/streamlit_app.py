@@ -27,23 +27,6 @@ def ensure_user_data():
         st.session_state['users'] = default_user_data.copy()
 
 
-# Title
-st.title('Curated articles just for you')
-st.subheader('Read, learn, and grow at your own pace!')
-
-# Select options for the API request
-category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
-st.markdown("---")
-
-# Sidebar elements
-with st.sidebar:
-    logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_transparent.png"
-    st.image(logo_url, width=300)
-    user_id = 'default_user'
-    ensure_user_data()
-    user_level = st.session_state['users'][user_id]['level']
-    st.subheader(f"Your current level: {user_level}")
-
 
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
@@ -175,6 +158,23 @@ def main():
             st.session_state['start'] = True
 
     else:
+        # Title
+        st.title('Curated articles just for you')
+        st.subheader('Read, learn, and grow at your own pace!')
+
+        # Select options for the API request
+        category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
+        st.markdown("---")
+
+        # Sidebar elements
+        with st.sidebar:
+            logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_transparent.png"
+            st.image(logo_url, width=300)
+            user_id = 'default_user'
+            ensure_user_data()
+            user_level = st.session_state['users'][user_id]['level']
+            st.subheader(f"Your current level: {user_level}")
+            
         ensure_user_data()
     
         user_id = 'default_user'    
