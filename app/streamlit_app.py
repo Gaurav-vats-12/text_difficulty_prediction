@@ -34,6 +34,21 @@ base_url = "http://api.mediastack.com/v1/news"
 
 # Select options for the API request
 category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
+        
+# Fetch news articles from mediastack API
+def fetch_news():
+    params = {
+        'access_key': mediastack_api_key,
+        'languages': "fr",
+        'categories': category,
+        'limit': 3  
+    }
+    response = requests.get(base_url, params=params)
+    if response.status_code == 200:
+        return response.json()['data']
+    else:
+        st.error('Failed to retrieve news articles.')
+        return []
 
 # Function to check if the image URL is valid
 def is_valid_image_url(url):
@@ -42,21 +57,6 @@ def is_valid_image_url(url):
         return response.status_code == 200 and 'image' in response.headers['Content-Type']
     except requests.RequestException:
         return False
-        
-# Fetch news articles from mediastack API
-def fetch_news():
-    params = {
-        'access_key': mediastack_api_key,
-        'languages': "fr",
-        'categories': category,
-        'limit': 1  
-    }
-    response = requests.get(base_url, params=params)
-    if response.status_code == 200:
-        return response.json()['data']
-    else:
-        st.error('Failed to retrieve news articles.')
-        return []
 
 
 
