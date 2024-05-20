@@ -24,31 +24,6 @@ if 'users' not in st.session_state:
 # CEFR levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
 
-# Function to update user level based on feedback
-def update_user_level(user_id, feedback):
-    feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
-    users = st.session_state['users']
-    if user_id not in users:
-        users[user_id] = {'feedback_points': 0, 'level': 'A1'}  # Initialize new user
-
-    user_data = users[user_id]
-    user_data['feedback_points'] += feedback_points[feedback]
-
-    # Thresholds for level change
-    upgrade_threshold = 3  # Points needed to move up a level
-    downgrade_threshold = -3  # Points needed to move down a level
-
-    current_index = cefr_levels.index(user_data['level'])
-    if user_data['feedback_points'] >= upgrade_threshold:
-        new_index = min(current_index + 1, len(cefr_levels) - 1)
-        user_data['level'] = cefr_levels[new_index]
-        user_data['feedback_points'] = 0  # Reset points after level change
-    elif user_data['feedback_points'] <= downgrade_threshold:
-        new_index = max(current_index - 1, 0)
-        user_data['level'] = cefr_levels[new_index]
-        user_data['feedback_points'] = 0
-
-    return user_data['level']
 
 
 
@@ -87,9 +62,11 @@ def fetch_news():
 
 # Dummy function to assign levels to articles
 def assign_article_levels(articles):
-    for article in articles:
-        article['level'] = random.choice(cefr_levels)
-    return articles
+    level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
+    valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
+    for article in valid_articles:
+        article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
+    return valid_articles
 
 # Load the model from GitHub
 def download_file_from_github(url, destination):
@@ -136,6 +113,7 @@ def setup_model():
 
 
 
+
 # Function to update user level based on feedback
 def update_user_level(user_id, feedback):
     feedback_points = {'Too Easy': 1, 'Just Right': 0, 'Challenging': 0, 'Too Difficult': -1}
@@ -146,19 +124,22 @@ def update_user_level(user_id, feedback):
     user_data = users[user_id]
     user_data['feedback_points'] += feedback_points[feedback]
 
-    upgrade_threshold = 3
-    downgrade_threshold = -3
+    # Thresholds for level change
+    upgrade_threshold = 3  # Points needed to move up a level
+    downgrade_threshold = -3  # Points needed to move down a level
+
     current_index = cefr_levels.index(user_data['level'])
     if user_data['feedback_points'] >= upgrade_threshold:
         new_index = min(current_index + 1, len(cefr_levels) - 1)
         user_data['level'] = cefr_levels[new_index]
-        user_data['feedback_points'] = 0
+        user_data['feedback_points'] = 0  # Reset points after level change
     elif user_data['feedback_points'] <= downgrade_threshold:
         new_index = max(current_index - 1, 0)
         user_data['level'] = cefr_levels[new_index]
         user_data['feedback_points'] = 0
 
     return user_data['level']
+
 
 
         
