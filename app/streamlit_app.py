@@ -166,6 +166,26 @@ def main():
             st.markdown("<h4 style='text-align: center; color: black;'>Start your journey to master French now</h4>", unsafe_allow_html=True)
             if st.button("Je commence!"):
                 st.session_state['start'] = True
+
+    # Initial Assessment
+    elif st.session_state.get('initial_assessment', False):
+        st.title('Initial French Level Assessment')
+        st.write("Select the most difficult sentence you understand:")
+
+        sentences = [
+            ("Le restaurant 'Bon appétit' recherche des serveurs pour l'été.", 'A1'),
+            ("Chaque année, l'humanité consomme plus de ressources que la Terre ne peut en produire en un an.", 'A2'),
+            ("Lorsqu'il y a un éclair avec des nuages et de la pluie, il risque d'y avoir de la foudre et du tonnerre.", 'B1'),
+            ("Tous ces bouleversements impliquent des conséquences tragiques comme l'augmentation de l'effet de serre et le réchauffement climatique.", 'B2'),
+            ("L'obésité frappe également l'Afrique subsaharienne, où vivent la plupart des populations sous-alimentées du monde (12,1 %), et l'Egypte (33%).", 'C1'),
+            ("Auparavant, la duplication de l'ADN se faisait par clonage moléculaire : la séquence d'intérêt était insérée dans le génome d'une bactérie et l'on se servait du taux de croissance élevé du micro-organisme pour obtenir autant de clones de la séquence d'ADN.", 'C2')
+        ]
+
+        for idx, (sentence, level) in enumerate(sentences):
+            if st.button(sentence, key=f"assessment_{idx}"):
+                user_id = 'default_user'
+                st.session_state['users'][user_id]['level'] = level
+                st.session_state['initial_assessment'] = False
                 
     else:
         # Title
