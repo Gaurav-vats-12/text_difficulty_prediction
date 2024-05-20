@@ -43,7 +43,6 @@ def is_valid_image_url(url):
         return False
         
 # Fetch news articles from mediastack API
-@st.cache_data(allow_output_mutation=True)
 def fetch_news():
     params = {
         'access_key': mediastack_api_key,
