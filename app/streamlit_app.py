@@ -16,14 +16,15 @@ import streamlit.components.v1 as components
 import traceback
 from itertools import cycle  
 
-# Initialize user data storage
-#if 'users' not in st.session_state:
-    #st.session_state['users'] = {}
 
 # Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
-users = {'user_id': {'level': 'A1', 'feedback_points': 0}}
+default_user_data = {'default_user': {'level': 'A1', 'feedback_points': 0}}
 
+# Function to ensure that user data is initialized in session state
+def ensure_user_data():
+    if 'users' not in st.session_state:
+        st.session_state['users'] = default_user_data.copy()
 
 
 
@@ -125,14 +126,15 @@ def update_user_level(user_id, feedback):
     downgrade_threshold = -3 # Points needed to move down a level
     
     current_index = cefr_levels.index(user_data['level'])
+    
     if user_data['feedback_points'] >= upgrade_threshold:
         new_index = min(current_index + 1, len(cefr_levels) - 1)
         user_data['level'] = cefr_levels[new_index]
-        user_data['feedback_points'] = 0
+        user_data['feedback_points'] = 0 # Reset points after level change
     elif user_data['feedback_points'] <= downgrade_threshold:
         new_index = max(current_index - 1, 0)
         user_data['level'] = cefr_levels[new_index]
-        user_data['feedback_points'] = 0
+        user_data['feedback_points'] = 0 # Reset points after level change
         
     return user_data['level']
 
@@ -140,11 +142,10 @@ def update_user_level(user_id, feedback):
 
         
 def main():
-    st.title('Levelingo')
-    user_id = 'default_user'
-    if 'users' not in st.session_state:
-        st.session_state['users'] = users
+    ensure_user_data()
     
+    st.title('Levelingo')
+    user_id = 'default_user'    
     user_level = st.session_state['users'][user_id]['level']
     st.write(f"Your current level: {user_level}")
 
