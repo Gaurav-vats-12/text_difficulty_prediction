@@ -162,7 +162,7 @@ def main():
         with col2:
             left_co, cent_co,last_co = st.columns(3)
             with cent_co:
-                st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg")
+                st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_baguette.png")
             st.markdown("<h1 style='text-align: center; color: black;'>From 'Oui Oui' to Fluent</h1>", unsafe_allow_html=True)
             if st.button("Start your journey to master French now", key='start'):
                 st.session_state['start'] = True
@@ -178,7 +178,7 @@ def main():
 
         # Sidebar elements
         with st.sidebar:
-            logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_transparent.png"
+            logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_baguette.png"
             st.image(logo_url, width=300)
             user_id = 'default_user'
             ensure_user_data()
