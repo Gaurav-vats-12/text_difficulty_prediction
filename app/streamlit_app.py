@@ -179,7 +179,7 @@ def main():
         # Sidebar elements
         with st.sidebar:
             logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_baguette.png"
-            st.image(logo_url, width=300)
+            st.image(logo_url, width=200)
             user_id = 'default_user'
             ensure_user_data()
             user_level = st.session_state['users'][user_id]['level']
