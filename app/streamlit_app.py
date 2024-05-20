@@ -17,8 +17,8 @@ import traceback
 from itertools import cycle  
 
 # Initialize user data storage
-if 'users' not in st.session_state:
-    st.session_state['users'] = {}
+#if 'users' not in st.session_state:
+    #st.session_state['users'] = {}
 
 # Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
