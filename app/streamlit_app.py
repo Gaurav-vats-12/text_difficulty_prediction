@@ -3,9 +3,9 @@ import streamlit as st
 import requests
 import os
 import transformers
-import sentencepiece as spm
-#try:
-    #import sentencepiece as spm
+import sentencepiece 
+##try:
+    ##import sentencepiece as spm
     #st.success('SentencePiece is successfully imported!')
 #except ImportError as e:
     #st.error(f'Failed to import SentencePiece: {e}')
@@ -15,13 +15,6 @@ import tokenizers
 import streamlit.components.v1 as components
 import traceback
 import sys
-
-# Display the title
-st.title('Python Environment Information')
-
-# Display the Python version
-python_version = sys.version
-st.write(f"Python version used in this environment: {python_version}")
 
 st.title('Levelingo')
 
@@ -41,6 +34,7 @@ def is_valid_image_url(url):
         return False
         
 # Fetch news articles from mediastack API
+@st.cache
 def fetch_news():
     params = {
         'access_key': mediastack_api_key,
@@ -99,10 +93,10 @@ def setup_model():
         return None, None
         
 def main():
-    model, tokenizer = setup_model()
-    if not model or not tokenizer:
-        st.error("Failed to load the NLP model and tokenizer.")
-        return
+    #model, tokenizer = setup_model()
+    #if not model or not tokenizer:
+        #st.error("Failed to load the NLP model and tokenizer.")
+        #return
         
     articles = fetch_news()
     if articles:
