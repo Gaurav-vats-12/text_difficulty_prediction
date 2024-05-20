@@ -156,7 +156,6 @@ def main():
         st.title('')
         st.title('')
         st.title('')
-        st.title('')
         st.markdown("<style>div.row-widget.stButton > button:first-child {margin: 0 auto; display: block;}</style>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
@@ -164,7 +163,8 @@ def main():
             with cent_co:
                 st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_baguette.png")
             st.markdown("<h1 style='text-align: center; color: black;'>From 'Oui Oui' to Fluent</h1>", unsafe_allow_html=True)
-            if st.button("Start your journey to master French now"):
+            st.markdown("<h2 style='text-align: center; color: black;'>Start your journey to master French now</h2>", unsafe_allow_html=True)
+            if st.button("Je commence!"):
                 st.session_state['start'] = True
                 
     else:
