@@ -1,9 +1,9 @@
 streamlit
 tokenizers
-transformers==4.40.2
+transformers
 torch
-tensorflow==2.15.0
-sentencepiece==0.1.99
+tensorflow
+sentencepiece
 streamlit
-requests>=2.31.0
+requests
 
