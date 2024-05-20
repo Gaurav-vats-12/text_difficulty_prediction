@@ -27,18 +27,20 @@ def ensure_user_data():
         st.session_state['users'] = default_user_data.copy()
 
 
-# App Structure
+# Title
 st.title('Levelingo')
+
 # Select options for the API request
 category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
+
 # Sidebar elements
 with st.sidebar:
-    st.header("Settings")
+    logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg"
+    st.image(logo_url, width=150)
     user_id = 'default_user'
     ensure_user_data()
     user_level = st.session_state['users'][user_id]['level']
     st.subheader(f"Your current level: {user_level}")
-
 
 
 # Fetch news articles from MediaStack
@@ -164,7 +166,6 @@ def main():
     
     user_id = 'default_user'    
     user_level = st.session_state['users'][user_id]['level']
-    st.write(f"Your current level: {user_level}")
 
     articles = fetch_news(category)
     if articles:
@@ -178,14 +179,13 @@ def main():
                 st.write(article['description'])
                 with st.expander("Read Now"):
                     components.iframe(article['url'], height=450, scrolling=True)
-
-                cols = st.columns(4)
-                feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
-                for i, option in enumerate(feedback_options):
-                    if cols[i].button(option, key=f"feedback_{idx}_{i}"):
-                        new_level = update_user_level(user_id, option)
-                        st.session_state['users'][user_id]['level'] = new_level
-                        st.experimental_rerun()
+                    cols = st.columns(4)
+                    feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
+                    for i, option in enumerate(feedback_options):
+                        if cols[i].button(option, key=f"feedback_{idx}_{i}"):
+                            new_level = update_user_level(user_id, option)
+                            st.session_state['users'][user_id]['level'] = new_level
+                            st.experimental_rerun()
                 st.markdown("---")
     else:
         st.write("No articles found. Try adjusting your filters.")
