@@ -36,7 +36,7 @@ category = st.selectbox("What do you want to read about?", ['general', 'business
 
 # Sidebar elements
 with st.sidebar:
-    logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg"
+    logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo_transparent.png"
     st.image(logo_url, width=300)
     user_id = 'default_user'
     ensure_user_data()
