@@ -28,7 +28,8 @@ def ensure_user_data():
 
 
 # Title
-st.title('Levelingo')
+st.title('Curated articles just for you')
+st.subtitle('Read, learn, and grow at your own pace!')
 
 # Select options for the API request
 category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
@@ -36,7 +37,7 @@ category = st.selectbox("What do you want to read about?", ['general', 'business
 # Sidebar elements
 with st.sidebar:
     logo_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/logo.jpeg"
-    st.image(logo_url, width=150)
+    st.image(logo_url, width=300)
     user_id = 'default_user'
     ensure_user_data()
     user_level = st.session_state['users'][user_id]['level']
