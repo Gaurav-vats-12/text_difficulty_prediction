@@ -153,6 +153,9 @@ def main():
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
     
     if not st.session_state['start']:
+        st.text('')
+        st.text('')
+        st.text('')
         st.markdown("<style>div.row-widget.stButton > button:first-child {margin: 0 auto; display: block;}</style>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
@@ -198,7 +201,6 @@ def main():
                         st.image(article['image'], width=300)
                     with col2:
                         st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
-
                     st.subheader(article['title'])
                     st.write(article['description'])
                     with st.expander("Read Now"):
