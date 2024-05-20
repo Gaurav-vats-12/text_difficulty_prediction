@@ -166,6 +166,7 @@ def main():
             st.markdown("<h4 style='text-align: center; color: black;'>Start your journey to master French now</h4>", unsafe_allow_html=True)
             if st.button("Je commence!"):
                 st.session_state['start'] = True
+                st.session_state['initial_assessment'] = True
 
     # Initial Assessment
     elif st.session_state.get('initial_assessment', False):
