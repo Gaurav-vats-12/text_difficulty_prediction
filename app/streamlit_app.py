@@ -16,6 +16,12 @@ import streamlit.components.v1 as components
 import traceback
 from itertools import cycle  
 
+# App Structure
+st.title('Levelingo')
+# Select options for the API request
+category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
+
+
 
 # Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
@@ -149,13 +155,9 @@ def update_user_level(user_id, feedback):
 def main():
     ensure_user_data()
     
-    st.title('Levelingo')
     user_id = 'default_user'    
     user_level = st.session_state['users'][user_id]['level']
     st.write(f"Your current level: {user_level}")
-
-    # Select options for the API request
-    category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
 
     articles = fetch_news(category)
     if articles:
