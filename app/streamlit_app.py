@@ -147,6 +147,8 @@ def update_user_level(user_id, feedback):
 
         
 def main():
+    st.set_page_config(layout='wide', page_title="Levelingo French Learning")
+
     if 'start' not in st.session_state:
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
     
