@@ -31,9 +31,6 @@ def ensure_user_data():
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
 base_url = "http://api.mediastack.com/v1/news"
-
-# Select options for the API request
-category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
         
 # Fetch news articles from mediastack API
 def fetch_news():
@@ -156,6 +153,9 @@ def main():
     user_id = 'default_user'    
     user_level = st.session_state['users'][user_id]['level']
     st.write(f"Your current level: {user_level}")
+
+    # Select options for the API request
+    category = st.selectbox("What do you want to read about?", ['general', 'business', 'technology', 'entertainment', 'sports', 'science', 'health'], index=1)
 
     articles = fetch_news()
     if articles:
