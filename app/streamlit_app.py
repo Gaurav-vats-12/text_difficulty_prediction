@@ -99,7 +99,8 @@ def setup_model():
         model = CamembertForSequenceClassification.from_pretrained(model_dir)
         return model, tokenizer
     except Exception as e:
-        raise Exception(f"Error loading model or tokenizer: {e}")
+        st.exception(e)
+        raise 
 
 # Setup the model
 try:
