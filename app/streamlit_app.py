@@ -17,6 +17,8 @@ import traceback
 from itertools import cycle 
 import sys
 
+st.set_page_config(layout='wide', page_title="OuiOui French Learning")
+
 # Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
 default_user_data = {'default_user': {'level': 'A1', 'feedback_points': 0}}
@@ -198,8 +200,6 @@ def initial_assessment():
 
         
 def main():
-    st.set_page_config(layout='wide', page_title="OuiOui French Learning")
-
     ensure_user_data()
 
     if 'start' not in st.session_state:
