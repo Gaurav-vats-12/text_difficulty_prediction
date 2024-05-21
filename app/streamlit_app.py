@@ -30,7 +30,7 @@ def ensure_user_data():
 
 
 # Fetch news articles from MediaStack
-mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
+mediastack_api_key = '2ecbc982b44e1ae0338fb33482fe8813'
 base_url = "http://api.mediastack.com/v1/news"
         
 # Fetch news articles from mediastack API
@@ -67,48 +67,48 @@ def assign_article_levels(articles):
     return valid_articles
 
 # Load the model from GitHub
-def download_file_from_github(url, destination):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(destination, 'wb') as f:
-            f.write(response.content)
-    else:
-        st.error("Failed to download file. Check the URL and network connection.")
+#def download_file_from_github(url, destination):
+    #response = requests.get(url)
+    #if response.status_code == 200:
+        #with open(destination, 'wb') as f:
+            #f.write(response.content)
+    #else:
+        #st.error("Failed to download file. Check the URL and network connection.")
 
-def setup_model():
+#def setup_model():
     """Setup the model by ensuring all necessary files are downloaded and loaded."""
-    model_dir = 'text_difficulty_prediction/app' 
-    os.makedirs(model_dir, exist_ok=True)
+    #model_dir = 'text_difficulty_prediction/app' 
+    #os.makedirs(model_dir, exist_ok=True)
 
     # Check if model files are already downloaded, else download them
-    model_files = {
-        'config.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/config.json',
-        'tokenizer_config.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/tokenizer_config.json',
-        'special_tokens_map.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/special_tokens_map.json',
-        'added_tokens.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/added_tokens.json',
-        'model.safetensors': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/model.safetensors',
-        'sentencepiece.bpe': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/sentencepiece.bpe.model'
+    #model_files = {
+        #'config.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/config.json',
+        #'tokenizer_config.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/tokenizer_config.json',
+        #'special_tokens_map.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/special_tokens_map.json',
+        #'added_tokens.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/added_tokens.json',
+        #'model.safetensors': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/model.safetensors',
+        #'sentencepiece.bpe': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/sentencepiece.bpe.model'
     }
 
-    for file_name, url in model_files.items():
-        file_path = os.path.join(model_dir, file_name)
-        if not os.path.exists(file_path):
-            download_file_from_github(url, file_path)
+    #for file_name, url in model_files.items():
+        #file_path = os.path.join(model_dir, file_name)
+        #if not os.path.exists(file_path):
+            #download_file_from_github(url, file_path)
 
     # Load model and tokenizer
-    try:
-        tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-        model = CamembertForSequenceClassification.from_pretrained(model_dir)
-        return model, tokenizer
-    except Exception as e:
-        st.exception(e)
-        raise 
+    #try:
+        #tokenizer = CamembertTokenizer.from_pretrained(model_dir)
+        #model = CamembertForSequenceClassification.from_pretrained(model_dir)
+        #return model, tokenizer
+    #except Exception as e:
+        #st.exception(e)
+        #raise 
 
 # Setup the model
-try:
-    model, tokenizer = setup_model()
-except Exception as e:
-    st.error("An error occurred while setting up the model.")
+#try:
+    #model, tokenizer = setup_model()
+#except Exception as e:
+    #st.error("An error occurred while setting up the model.")
 
 # Function to update user level based on feedback
 def update_user_level(user_id, feedback):
