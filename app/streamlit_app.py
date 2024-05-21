@@ -88,7 +88,7 @@ def assign_article_levels(articles):
         #'added_tokens.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/added_tokens.json',
         #'model.safetensors': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/model.safetensors',
         #'sentencepiece.bpe': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/sentencepiece.bpe.model'
-    }
+    #}
 
     #for file_name, url in model_files.items():
         #file_path = os.path.join(model_dir, file_name)
