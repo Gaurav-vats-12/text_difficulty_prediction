@@ -2,8 +2,8 @@
 import streamlit as st
 import requests
 import os
-#import transformers
-#import sentencepiece 
+import transformers
+import sentencepiece 
 #try:
     ##import sentencepiece as spm
     #st.success('SentencePiece is successfully imported!')
@@ -11,7 +11,7 @@ import os
     #st.error(f'Failed to import SentencePiece: {e}')
 #import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
-#import tokenizers
+import tokenizers
 import streamlit.components.v1 as components
 import traceback
 from itertools import cycle 
