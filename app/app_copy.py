@@ -3,12 +3,12 @@ import streamlit as st
 import requests
 import os
 import transformers
-#import sentencepiece 
-try:
-    import sentencepiece
-    st.success('SentencePiece is successfully imported!')
-except ImportError as e:
-    st.error(f'Failed to import SentencePiece: {e}')
+import sentencepiece 
+#try:
+    #import sentencepiece
+    #st.success('SentencePiece is successfully imported!')
+#except ImportError as e:
+    #st.error(f'Failed to import SentencePiece: {e}')
 import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
@@ -27,9 +27,8 @@ def ensure_user_data():
         st.session_state['users'] = default_user_data.copy()
 
 
-
 # Fetch news articles from MediaStack
-mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
+mediastack_api_key = '2ecbc982b44e1ae0338fb33482fe8813'
 base_url = "http://api.mediastack.com/v1/news"
         
 # Fetch news articles from mediastack API
@@ -58,63 +57,11 @@ def is_valid_image_url(url):
 
 
 # Dummy function to assign levels to articles
-#def assign_article_levels(articles):
-    #level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
-    #valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
-    #for article in valid_articles:
-        #article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
-    #return valid_articles
-
-# Load the model from GitHub
-def download_file_from_github(url, destination):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(destination, 'wb') as f:
-            f.write(response.content)
-    else:
-        st.error("Failed to download file. Check the URL and network connection.")
-
-def setup_model():
-    """Setup the model by ensuring all necessary files are downloaded and loaded."""
-    model_dir = 'text_difficulty_prediction/app/cache' 
-    os.makedirs(model_dir, exist_ok=True)
-
-    # List of model files you need to download
-    model_files = [
-        'config.json',
-        'model.safetensors',
-        'added_tokens.json',
-        'special_tokens_map.json',
-        'tokenizer_config.json',
-        'sentencepiece.bpe.model'
-    ]
-
-    github_base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
-
-    # Download model and tokenizer files
-    for file_name in model_files:
-        file_path = os.path.join(model_dir, file_name)
-        if not os.path.exists(file_path):
-            download_file_from_github(f"{github_base_url}{file_name}", file_path)
-
-    # Load model and tokenizer
-    try:
-        tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-        model = CamembertForSequenceClassification.from_pretrained(model_dir)
-        return model, tokenizer
-    except Exception as e:
-        st.text("Error details:")
-        st.text(traceback.format_exc())  # This prints the traceback of the exception
-        st.error(f"Error loading model or tokenizer: {str(e)}")
-        return None, None
-      
-# Function to assign levels to articles using the model
-def assign_article_levels(articles, model, tokenizer):
+def assign_article_levels(articles):
+    level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
     valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
-    pipe = pipeline('text-classification', model=model, tokenizer=tokenizer)
     for article in valid_articles:
-        result = pipe(article['description'])[0]
-        article['level'] = result['label']
+        article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
     return valid_articles
 
 
@@ -218,29 +165,27 @@ def main():
 
         articles = fetch_news(category)
         if articles:
-            model, tokenizer = setup_model()
-            if model and tokenizer:
-                articles = assign_article_levels(articles, model, tokenizer)
-                articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
-                for idx, article in enumerate(articles):
-                    with st.container():
-                        col1, col2 = st.columns([0.9, 0.1])
-                        with col1:
-                            st.image(article['image'], width=300)
-                        with col2:
-                            st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
-                        st.subheader(article['title'])
-                        st.write(article['description'])
-                        with st.expander("Read Now"):
-                            components.iframe(article['url'], height=450, scrolling=True)
-                            cols = st.columns(4)
-                            feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
-                            for i, option in enumerate(feedback_options):
-                                if cols[i].button(option, key=f"feedback_{idx}_{i}"):
-                                    new_level = update_user_level(user_id, option)
-                                    st.session_state['users'][user_id]['level'] = new_level
-                                    st.experimental_rerun()
-                        st.markdown("---")
+            articles = assign_article_levels(articles)
+            articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
+            for idx, article in enumerate(articles):
+                with st.container():
+                    col1, col2 = st.columns([0.9, 0.1])
+                    with col1:
+                        st.image(article['image'], width=300)
+                    with col2:
+                        st.markdown(f"<div style='border: 1px solid gray; border-radius: 4px; padding: 10px; text-align: center;'><strong>{article['level']}</strong></div>", unsafe_allow_html=True)
+                    st.subheader(article['title'])
+                    st.write(article['description'])
+                    with st.expander("Read Now"):
+                        components.iframe(article['url'], height=450, scrolling=True)
+                        cols = st.columns(4)
+                        feedback_options = ['Too Easy', 'Just Right', 'Challenging', 'Too Difficult']
+                        for i, option in enumerate(feedback_options):
+                            if cols[i].button(option, key=f"feedback_{idx}_{i}"):
+                                new_level = update_user_level(user_id, option)
+                                st.session_state['users'][user_id]['level'] = new_level
+                                st.experimental_rerun()
+                    st.markdown("---")
         else:
             st.write("No articles found. Try adjusting your filters.")
 
