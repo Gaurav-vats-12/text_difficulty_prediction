@@ -65,58 +65,6 @@ def assign_article_levels(articles):
         article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
     return valid_articles
 
-# Load the model from GitHub
-def download_file_from_github(url, destination):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(destination, 'wb') as f:
-            f.write(response.content)
-    else:
-        st.error("Failed to download file. Check the URL and network connection.")
-
-def setup_model():
-    """Setup the model by ensuring all necessary files are downloaded and loaded."""
-    model_dir = 'text_difficulty_prediction/app/cache' 
-    os.makedirs(model_dir, exist_ok=True)
-
-    # List of model files you need to download
-    model_files = [
-        'config.json',
-        'model.safetensors',
-        'added_tokens.json',
-        'special_tokens_map.json',
-        'tokenizer_config.json',
-        'sentencepiece.bpe.model'
-    ]
-
-    github_base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
-
-    # Download model and tokenizer files
-    for file_name in model_files:
-        file_path = os.path.join(model_dir, file_name)
-        if not os.path.exists(file_path):
-            download_file_from_github(f"{github_base_url}{file_name}", file_path)
-
-    # Load model and tokenizer
-    try:
-        tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-        model = CamembertForSequenceClassification.from_pretrained(model_dir)
-        return model, tokenizer
-    except Exception as e:
-        st.text("Error details:")
-        st.text(traceback.format_exc())  # This prints the traceback of the exception
-        st.error(f"Error loading model or tokenizer: {str(e)}")
-        return None, None
-      
-# Function to assign levels to articles using the model
-#def assign_article_levels(articles, model, tokenizer):
-    #valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
-    #pipe = pipeline('text-classification', model=model, tokenizer=tokenizer)
-    #for article in valid_articles:
-        #result = pipe(article['description'])[0]
-        #article['level'] = result['label']
-    #return valid_articles
-
 
 
 # Function to update user level based on feedback
