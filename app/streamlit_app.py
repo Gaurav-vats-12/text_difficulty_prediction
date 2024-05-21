@@ -106,7 +106,7 @@ def setup_model():
 try:
     model, tokenizer = setup_model()
 except Exception as e:
-    print(e)
+    st.error("An error occurred while setting up the model.")
 
 # Function to update user level based on feedback
 def update_user_level(user_id, feedback):
