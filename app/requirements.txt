@@ -1,8 +1,2 @@
 streamlit
-tokenizers
-transformers
-torch
-tensorflow
-sentencepiece
-streamlit
 requests
