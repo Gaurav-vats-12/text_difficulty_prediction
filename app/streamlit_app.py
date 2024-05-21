@@ -142,17 +142,17 @@ def update_user_level(user_id, feedback):
         
     return user_data['level']
 
-def predict_article_levels(articles, model, tokenizer):
-    for article in articles:
-        if is_valid_image_url(article['image']):
-            text = article['title'] + " " + article['description']
-            inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
-            with torch.no_grad():
-                outputs = model(**inputs)
-                predictions = outputs.logits.argmax(-1).item()
+#def predict_article_levels(articles, model, tokenizer):
+    #for article in articles:
+        #if is_valid_image_url(article['image']):
+            #text = article['title'] + " " + article['description']
+            #inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+            #with torch.no_grad():
+                #outputs = model(**inputs)
+                #predictions = outputs.logits.argmax(-1).item()
             # Assuming you've mapped the model's output indices to CEFR levels:
-            article['level'] = cefr_levels[predictions]
-    return articles
+            #article['level'] = cefr_levels[predictions]
+    #return articles
 
 
 
@@ -250,7 +250,7 @@ def main():
 
         articles = fetch_news(category)
         if articles:
-            articles = predict_article_levels(articles, model, tokenizer)
+            articles = assign_article_levels(articles)
             articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
             for idx, article in enumerate(articles):
                 with st.container():
