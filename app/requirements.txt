@@ -1,3 +1,5 @@
 streamlit
 requests
 transformers
+tokenizers
+sentencepiece
