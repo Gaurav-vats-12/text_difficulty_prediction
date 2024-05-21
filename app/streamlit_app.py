@@ -75,7 +75,7 @@ def download_file_from_github(url, destination):
 
 def setup_model():
     """Setup the model by ensuring all necessary files are downloaded and loaded."""
-    model_dir = 'text_difficulty_prediction/app' 
+    model_dir = 'text_difficulty_prediction/main/app' 
     os.makedirs(model_dir, exist_ok=True)
 
     # Check if model files are already downloaded, else download them
