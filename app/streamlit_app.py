@@ -16,11 +16,6 @@ import streamlit.components.v1 as components
 import traceback
 from itertools import cycle 
 import sys
-# Fetch the Python version
-python_version = sys.version
-# Display the Python version in the app
-st.write(f'Python version: {python_version}')
-
 
 # Initialize user data and levels
 cefr_levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
