@@ -29,7 +29,7 @@ def ensure_user_data():
 
 
 # Fetch news articles from MediaStack
-mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
+mediastack_api_key = '2ecbc982b44e1ae0338fb33482fe8813'
 base_url = "http://api.mediastack.com/v1/news"
         
 # Fetch news articles from mediastack API
