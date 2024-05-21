@@ -1,21 +1,11 @@
 # Import necessary libraries
+import torch
 import streamlit as st
 import requests
 import os
-import transformers
-import sentencepiece 
-#try:
-    ##import sentencepiece as spm
-    #st.success('SentencePiece is successfully imported!')
-#except ImportError as e:
-    #st.error(f'Failed to import SentencePiece: {e}')
-#import torch
-from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
-import tokenizers
+from transformers import CamembertTokenizer, CamembertForSequenceClassification
 import streamlit.components.v1 as components
-import traceback
-from itertools import cycle 
-import sys
+from itertools import cycle
 
 st.set_page_config(layout='wide', page_title="OuiOui French Learning")
 
@@ -28,18 +18,17 @@ def ensure_user_data():
     if 'users' not in st.session_state:
         st.session_state['users'] = default_user_data.copy()
 
-
 # Fetch news articles from MediaStack
-mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
+mediastack_api_key = '2ecbc982b44e1ae0338fb33482fe8813'
 base_url = "http://api.mediastack.com/v1/news"
-        
+
 # Fetch news articles from mediastack API
 def fetch_news(category):
     params = {
         'access_key': mediastack_api_key,
         'languages': "fr",
         'categories': category,
-        'limit': 1  
+        'limit': 1
     }
     response = requests.get(base_url, params=params)
     if response.status_code == 200:
@@ -50,21 +39,21 @@ def fetch_news(category):
 
 # Function to check if the image URL is valid
 def is_valid_image_url(url):
+    if url is None:
+        return False
     try:
         response = requests.head(url, timeout=5)
         return response.status_code == 200 and 'image' in response.headers['Content-Type']
     except requests.RequestException:
         return False
 
-
-
-# Dummy function to assign levels to articles
-def assign_article_levels(articles):
-    level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
-    valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
-    for article in valid_articles:
-        article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
-    return valid_articles
+# Function to assign levels to articles
+# def assign_article_levels(articles):
+#     level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
+#     valid_articles = [article for article in articles if is_valid_image_url(article.get('image'))]
+#     for article in valid_articles:
+#         article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
+#     return valid_articles
 
 # Load the model from GitHub
 def download_file_from_github(url, destination):
@@ -77,17 +66,17 @@ def download_file_from_github(url, destination):
 
 def setup_model():
     """Setup the model by ensuring all necessary files are downloaded and loaded."""
-    model_dir = 'text_difficulty_prediction/app' 
+    model_dir = 'text_difficulty_prediction/app'
     os.makedirs(model_dir, exist_ok=True)
 
     # Check if model files are already downloaded, else download them
     model_files = {
         'config.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/config.json',
-        'tokenizer_config.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/tokenizer_config.json',
-        'special_tokens_map.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/special_tokens_map.json',
-        'added_tokens.json': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/added_tokens.json',
-        'model.safetensors': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/model.safetensors',
-        'sentencepiece.bpe': 'https://github.com/vgentile98/text_difficulty_prediction/main/app/sentencepiece.bpe.model'
+        'tokenizer_config.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/tokenizer_config.json',
+        'special_tokens_map.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/special_tokens_map.json',
+        'added_tokens.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/added_tokens.json',
+        'model.safetensors': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/model.safetensors',
+        'sentencepiece.bpe': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/sentencepiece.bpe.model'
     }
 
     for file_name, url in model_files.items():
@@ -102,7 +91,7 @@ def setup_model():
         return model, tokenizer
     except Exception as e:
         st.exception(e)
-        raise 
+        raise
 
 # Setup the model
 try:
@@ -119,7 +108,7 @@ def update_user_level(user_id, feedback):
     feedback_points = {'Too Easy': 1, 'Just Right': 0.5, 'Challenging': 0.5, 'Too Difficult': -1}
     user_data = st.session_state['users'][user_id]
     user_data['feedback_points'] += feedback_points[feedback]
-    
+
     # Thresholds for level change
     upgrade_threshold = 3 # Points needed to move up a level
     downgrade_threshold = -3 # Points needed to move down a level
@@ -139,22 +128,20 @@ def update_user_level(user_id, feedback):
 
     # Update the user data in session state
     st.session_state['users'][user_id] = user_data
-        
+
     return user_data['level']
 
 def predict_article_levels(articles, model, tokenizer):
     for article in articles:
-        if is_valid_image_url(article['image']):
+        if is_valid_image_url(article.get('image')):
             text = article['title'] + " " + article['description']
             inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
             with torch.no_grad():
                 outputs = model(**inputs)
                 predictions = outputs.logits.argmax(-1).item()
             # Assuming you've mapped the model's output indices to CEFR levels:
-            article['level'] = cefr_levels[predictions]
+                article['level'] = cefr_levels[predictions]
     return articles
-
-
 
 # Function for initial assessment
 def initial_assessment():
@@ -197,22 +184,20 @@ def initial_assessment():
         st.write(f"Your level is: {level}")
         st.experimental_rerun()
 
-
-        
 def main():
     ensure_user_data()
 
     if 'start' not in st.session_state:
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
-    
+
     if not st.session_state['start']:
         st.title('')
         st.title('')
         st.title('')
         st.markdown("<style>div.row-widget.stButton > button:first-child {margin: 0 auto; display: block;}</style>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns([1,2,1])
+        col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            left_co, cent_co,last_co = st.columns(3)
+            left_co, cent_co, last_co = st.columns(3)
             with cent_co:
                 st.image("https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/baguette_logo.png")
             st.markdown("<h1 style='text-align: center; color: black;'>From 'Oui Oui' to Fluent</h1>", unsafe_allow_html=True)
@@ -224,7 +209,7 @@ def main():
     # Initial Assessment
     elif st.session_state.get('initial_assessment', False):
         initial_assessment()
-                
+
     else:
         # Title
         st.title('Curated articles just for you')
@@ -242,16 +227,16 @@ def main():
             ensure_user_data()
             user_level = st.session_state['users'][user_id]['level']
             st.subheader(f"Your current level: {user_level}")
-            
+
         ensure_user_data()
-    
-        user_id = 'default_user'    
+
+        user_id = 'default_user'
         user_level = st.session_state['users'][user_id]['level']
 
         articles = fetch_news(category)
         if articles:
             articles = predict_article_levels(articles, model, tokenizer)
-            articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
+            articles = [article for article in articles if article.get('level') == user_level and is_valid_image_url(article.get('image'))]
             for idx, article in enumerate(articles):
                 with st.container():
                     # First row for image and level
@@ -275,8 +260,5 @@ def main():
         else:
             st.write("No articles found. Try adjusting your filters.")
 
-
 if __name__ == '__main__':
     main()
-
-
