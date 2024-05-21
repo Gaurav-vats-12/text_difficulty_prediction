@@ -3,12 +3,12 @@ import streamlit as st
 import requests
 import os
 import transformers
-#import sentencepiece 
-try:
-    import sentencepiece
-    st.success('SentencePiece is successfully imported!')
-except ImportError as e:
-    st.error(f'Failed to import SentencePiece: {e}')
+import sentencepiece 
+#try:
+    #import sentencepiece
+    #st.success('SentencePiece is successfully imported!')
+#except ImportError as e:
+    #st.error(f'Failed to import SentencePiece: {e}')
 import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification, pipeline
 import tokenizers
@@ -58,12 +58,12 @@ def is_valid_image_url(url):
 
 
 # Dummy function to assign levels to articles
-#def assign_article_levels(articles):
-    #level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
-    #valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
-    #for article in valid_articles:
-        #article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
-    #return valid_articles
+def assign_article_levels(articles):
+    level_cycle = cycle(cefr_levels)  # Create a cycle iterator from CEFR levels
+    valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
+    for article in valid_articles:
+        article['level'] = next(level_cycle)  # Assign levels in a cyclic manner
+    return valid_articles
 
 # Load the model from GitHub
 def download_file_from_github(url, destination):
@@ -109,13 +109,13 @@ def setup_model():
         return None, None
       
 # Function to assign levels to articles using the model
-def assign_article_levels(articles, model, tokenizer):
-    valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
-    pipe = pipeline('text-classification', model=model, tokenizer=tokenizer)
-    for article in valid_articles:
-        result = pipe(article['description'])[0]
-        article['level'] = result['label']
-    return valid_articles
+#def assign_article_levels(articles, model, tokenizer):
+    #valid_articles = [article for article in articles if is_valid_image_url(article['image'])]
+    #pipe = pipeline('text-classification', model=model, tokenizer=tokenizer)
+    #for article in valid_articles:
+        #result = pipe(article['description'])[0]
+        #article['level'] = result['label']
+    #return valid_articles
 
 
 
