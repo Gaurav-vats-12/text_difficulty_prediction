@@ -27,7 +27,6 @@ def ensure_user_data():
         st.session_state['users'] = default_user_data.copy()
 
 
-
 # Fetch news articles from MediaStack
 mediastack_api_key = '2ecbc982b44e1ae0338fb33482fe8813'
 base_url = "http://api.mediastack.com/v1/news"
