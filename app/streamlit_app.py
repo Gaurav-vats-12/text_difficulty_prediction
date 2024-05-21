@@ -75,39 +75,31 @@ def download_file_from_github(url, destination):
 
 def setup_model():
     """Setup the model by ensuring all necessary files are downloaded and loaded."""
-    model_dir = 'text_difficulty_prediction/app/cache' 
+    model_dir = 'text_difficulty_prediction/app' 
     os.makedirs(model_dir, exist_ok=True)
 
-    # List of model files you need to download
-    model_files = [
-        'config.json',
-        'model.safetensors',
-        'added_tokens.json',
-        'special_tokens_map.json',
-        'tokenizer_config.json',
-        'sentencepiece.bpe.model'
-    ]
+    # Check if model files are already downloaded, else download them
+    model_files = {
+        'config.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/config.json',
+        'tokenizer_config.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/tokenizer_config.json',
+        'special_tokens_map.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/special_tokens_map.json',
+        'added_tokens.json': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/added_tokens.json',
+        'model.safetensors': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/model.safetensors,
+        'sentencepiece.bpe': 'https://github.com/vgentile98/text_difficulty_prediction/raw/main/app/sentencepiece.bpe.model        
+'
+    }
 
-    github_base_url = "https://raw.githubusercontent.com/vgentile98/text_difficulty_prediction/main/app/cache/"
-
-    # Download model and tokenizer files
-    for file_name in model_files:
+    for file_name, url in model_files.items():
         file_path = os.path.join(model_dir, file_name)
         if not os.path.exists(file_path):
-            download_file_from_github(f"{github_base_url}{file_name}", file_path)
+            download_file_from_github(url, file_path)
 
     # Load model and tokenizer
-    #try:
-        #tokenizer = CamembertTokenizer.from_pretrained(model_dir)
-        #model = CamembertForSequenceClassification.from_pretrained(model_dir)
-        #return model, tokenizer
-    #except Exception as e:
-        #st.text("Error details:")
-        #st.text(traceback.format_exc())  # This prints the traceback of the exception
-        #st.error(f"Error loading model or tokenizer: {str(e)}")
-        #return None, None
+    tokenizer = CamembertTokenizer.from_pretrained(model_dir)
+    model = CamembertForSequenceClassification.from_pretrained(model_dir)
+    return model, tokenizer
 
-
+model, tokenizer = setup_model()
 
 
 # Function to update user level based on feedback
@@ -141,6 +133,18 @@ def update_user_level(user_id, feedback):
     st.session_state['users'][user_id] = user_data
         
     return user_data['level']
+
+def predict_article_levels(articles, model, tokenizer):
+    for article in articles:
+        if is_valid_image_url(article['image']):
+            text = article['title'] + " " + article['description']
+            inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+            with torch.no_grad():
+                outputs = model(**inputs)
+                predictions = outputs.logits.argmax(-1).item()
+            # Assuming you've mapped the model's output indices to CEFR levels:
+            article['level'] = cefr_levels[predictions]
+    return articles
 
 
 
@@ -240,7 +244,7 @@ def main():
 
         articles = fetch_news(category)
         if articles:
-            articles = assign_article_levels(articles) 
+            articles = predict_article_levels(articles, model, tokenizer)
             articles = [article for article in articles if article['level'] == user_level and is_valid_image_url(article['image'])]
             for idx, article in enumerate(articles):
                 with st.container():
