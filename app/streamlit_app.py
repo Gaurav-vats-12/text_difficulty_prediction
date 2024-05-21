@@ -27,7 +27,6 @@ def ensure_user_data():
         st.session_state['users'] = default_user_data.copy()
 
 
-
 # Fetch news articles from MediaStack
 mediastack_api_key = '34361d5ce77e0449786fe2d144e015a4'
 base_url = "http://api.mediastack.com/v1/news"
@@ -145,9 +144,53 @@ def update_user_level(user_id, feedback):
 
 
 
+# Function for initial assessment
+def initial_assessment():
+    st.title('Initial French Level Assessment')
+    st.write("Select the main idea of the following sentences:")
+
+    questions = [
+        ("Le restaurant 'Bon appétit' recherche des serveurs pour l'été.", ["A restaurant is looking for summer staff.", "A restaurant is closing for the summer.", "A restaurant is changing its menu."], 0, 'A1'),
+        ("Chaque année, l'humanité consomme plus de ressources que la Terre ne peut en produire en un an.", ["Humans consume more resources than the Earth can produce annually.", "The Earth produces more resources than humans need.", "Resources are equally consumed and produced."], 0, 'A2'),
+        ("Lorsqu'il y a un éclair avec des nuages et de la pluie, il risque d'y avoir de la foudre et du tonnerre.", ["Thunderstorms often bring lightning.", "Rain never comes with lightning.", "Thunderstorms are not dangerous."], 0, 'B1'),
+        ("Tous ces bouleversements impliquent des conséquences tragiques comme l'augmentation de l'effet de serre et le réchauffement climatique.", ["Changes lead to greenhouse effect and climate warming.", "Changes have no impact on the environment.", "Climate warming is unrelated to greenhouse effect."], 0, 'B2'),
+        ("L'obésité frappe également l'Afrique subsaharienne, où vivent la plupart des populations sous-alimentées du monde (12,1 %), et l'Egypte (33%).", ["Obesity affects even undernourished regions.", "Obesity is only a problem in wealthy countries.", "Undernourishment is not an issue in Africa."], 0, 'C1'),
+        ("Auparavant, la duplication de l'ADN se faisait par clonage moléculaire : la séquence d'intérêt était insérée dans le génome d'une bactérie et l'on se servait du taux de croissance élevé du micro-organisme pour obtenir autant de clones de la séquence d'ADN.", ["DNA duplication was done through molecular cloning.", "Molecular cloning is not related to DNA.", "Bacteria were not used in DNA duplication."], 0, 'C2')
+    ]
+
+    total_score = 0
+
+    for idx, (sentence, options, correct_idx, level) in enumerate(questions):
+        st.write(f"**Sentence {idx + 1}:** {sentence}")
+        answer = st.radio("What is the main idea?", options, key=f"assessment_{idx}")
+        if options.index(answer) == correct_idx:
+            total_score += 1
+
+    if st.button("Submit"):
+        user_id = 'default_user'
+        if total_score <= 2:
+            level = 'A1'
+        elif total_score <= 4:
+            level = 'A2'
+        elif total_score <= 6:
+            level = 'B1'
+        elif total_score <= 8:
+            level = 'B2'
+        elif total_score <= 10:
+            level = 'C1'
+        else:
+            level = 'C2'
+        st.session_state['users'][user_id]['level'] = level
+        st.session_state['initial_assessment'] = False
+        st.write(f"Your level is: {level}")
+        st.experimental_rerun()
+
+
         
 def main():
-    st.set_page_config(layout='wide', page_title="Levelingo French Learning")
+    st.set_page_config(layout='wide', page_title="OuiOui French Learning")
+
+    ensure_user_data()
 
     if 'start' not in st.session_state:
         st.session_state['start'] = False  # This keeps track of whether the user has started the app
@@ -170,24 +213,7 @@ def main():
 
     # Initial Assessment
     elif st.session_state.get('initial_assessment', False):
-        st.title('Initial French Level Assessment')
-        st.write("Select the most difficult sentence you understand:")
-
-        sentences = [
-            ("Le restaurant 'Bon appétit' recherche des serveurs pour l'été.", 'A1'),
-            ("Chaque année, l'humanité consomme plus de ressources que la Terre ne peut en produire en un an.", 'A2'),
-            ("Lorsqu'il y a un éclair avec des nuages et de la pluie, il risque d'y avoir de la foudre et du tonnerre.", 'B1'),
-            ("Tous ces bouleversements impliquent des conséquences tragiques comme l'augmentation de l'effet de serre et le réchauffement climatique.", 'B2'),
-            ("L'obésité frappe également l'Afrique subsaharienne, où vivent la plupart des populations sous-alimentées du monde (12,1 %), et l'Egypte (33%).", 'C1'),
-            ("Auparavant, la duplication de l'ADN se faisait par clonage moléculaire : la séquence d'intérêt était insérée dans le génome d'une bactérie et l'on se servait du taux de croissance élevé du micro-organisme pour obtenir autant de clones de la séquence d'ADN.", 'C2')
-        ]
-
-        for idx, (sentence, level) in enumerate(sentences):
-            if st.button(sentence, key=f"assessment_{idx}"):
-                user_id = 'default_user'
-                ensure_user_data()
-                st.session_state['users'][user_id]['level'] = level
-                st.session_state['initial_assessment'] = False
+        initial_assessment()
                 
     else:
         # Title
