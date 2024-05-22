@@ -4,3 +4,4 @@ transformers
 tokenizers
 sentencepiece
 torch
+python-dotenv

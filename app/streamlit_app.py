@@ -6,6 +6,10 @@ import os
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
 import streamlit.components.v1 as components
 from itertools import cycle
+from dotenv import load_dotenv
+
+# load environment variables
+load_dotenv()
 
 st.set_page_config(layout='wide', page_title="OuiOui French Learning")
 
@@ -18,8 +22,9 @@ def ensure_user_data():
     if 'users' not in st.session_state:
         st.session_state['users'] = default_user_data.copy()
 
+
 # Fetch news articles from MediaStack
-mediastack_api_key = '2ecbc982b44e1ae0338fb33482fe8813'
+mediastack_api_key = os.getenv('MEDIASTACK_API_KEY')
 base_url = "http://api.mediastack.com/v1/news"
 
 # Fetch news articles from mediastack API
